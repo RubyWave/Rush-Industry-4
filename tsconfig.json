@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "jsx": "react-jsx",
+    "types": ["react", "react-dom"],
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": true,
     "module": "es6",

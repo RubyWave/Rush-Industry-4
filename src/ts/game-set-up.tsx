@@ -2,16 +2,16 @@
 create two HTML elements and add it to the body. One is a canvas, the second one is a div.
 */
 
-import { Board, initiateBoard } from "./board";
+import React from "react";
+import { initiateBoard } from "./board";
 import { bindBasicKeyboardControls } from "./controls";
-import { createGameStates, GameStates } from "./game-information/game-states";
-import { initResourcesStorageUI } from "./ui/resources-storage";
+import { createRoot } from "react-dom/client";
+import { ExampleElement } from "./ui/resources-storage";
 
 export let gameCanvas: HTMLCanvasElement;
 export let uiLayer: HTMLDivElement;
-export let gameStates: GameStates;
 
-const initiateGameSetup = (): { board: Board; gameStates: GameStates } => {
+const initiateGameSetup = () => {
 	gameCanvas = document.createElement("canvas");
 	gameCanvas.className = "game-canvas";
 	uiLayer = document.createElement("div");
@@ -20,11 +20,18 @@ const initiateGameSetup = (): { board: Board; gameStates: GameStates } => {
 	document.body.appendChild(gameCanvas);
 	document.body.appendChild(uiLayer);
 
-	gameStates = createGameStates();
-	const board = initiateBoard();
+	initiateBoard();
 	bindBasicKeyboardControls();
-	initResourcesStorageUI(gameStates.resourcesStorage);
-	return { board, gameStates };
+
+	renderUI();
 };
+
+function renderUI() {
+	createRoot(uiLayer).render(
+		<React.StrictMode>
+			<ExampleElement />
+		</React.StrictMode>,
+	);
+}
 
 export default initiateGameSetup;

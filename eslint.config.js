@@ -31,6 +31,7 @@ module.exports = defineConfig([
 		extends: compat.extends(
 			"prettier",
 			"eslint:recommended",
+			"plugin:react/recommended",
 			"plugin:@typescript-eslint/recommended",
 		),
 
@@ -40,6 +41,8 @@ module.exports = defineConfig([
 		},
 
 		rules: {
+			"react/react-in-jsx-scope": "off",
+			"react/prop-types": "off",
 			"prettier/prettier": [
 				"warn",
 				{
