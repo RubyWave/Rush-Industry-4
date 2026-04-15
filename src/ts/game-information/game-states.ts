@@ -10,6 +10,8 @@ export interface GameStates {
 	runState: boolean;
 	/** Resources storage */
 	resourcesStorage: ResourcesStorage;
+	/** Cash in the bank */
+	cash: number;
 }
 
 export function createGameStates(): GameStates {
@@ -24,5 +26,6 @@ export function createGameStates(): GameStates {
 				}),
 			),
 		},
+		cash: 0,
 	};
 }

@@ -1,4 +1,7 @@
-import { gameStatesGlobal } from "./game-information/gameStatesStore";
+import {
+	emitChange,
+	gameStatesGlobal,
+} from "./game-information/gameStatesStore";
 
 /**
  * Space toggles play/pause. Prevents default so the page does not scroll.
@@ -11,6 +14,7 @@ export function bindBasicKeyboardControls(): () => void {
 		}
 		event.preventDefault();
 		gameStatesGlobal.runState = !gameStatesGlobal.runState;
+		emitChange();
 		console.log("runState:", gameStatesGlobal.runState);
 	};
 

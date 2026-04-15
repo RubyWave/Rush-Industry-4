@@ -6,7 +6,9 @@ import React from "react";
 import { initiateBoard } from "./board";
 import { bindBasicKeyboardControls } from "./controls";
 import { createRoot } from "react-dom/client";
-import { ExampleElement } from "./ui/resources-storage";
+import { ResourcesStorage } from "./ui/ResourcesStorage";
+import { GameTimer } from "./ui/GameTimer";
+import { CashDisplay } from "./ui/CashDisplay";
 
 export let gameCanvas: HTMLCanvasElement;
 export let uiLayer: HTMLDivElement;
@@ -29,7 +31,11 @@ const initiateGameSetup = () => {
 function renderUI() {
 	createRoot(uiLayer).render(
 		<React.StrictMode>
-			<ExampleElement />
+			<div className="right-ui-container">
+				<GameTimer />
+				<ResourcesStorage />
+				<CashDisplay />
+			</div>
 		</React.StrictMode>,
 	);
 }

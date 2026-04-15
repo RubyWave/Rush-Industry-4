@@ -19,3 +19,23 @@ body {
 	height: 100%;
 	z-index: 2;
 }
+.right-ui-container {
+	position: absolute;
+	top: 2rem;
+	right: 2rem;
+	width: max-content;
+	color: white;
+}
+.resources-storage {
+	ul {
+		margin: 0;
+		padding: 0;
+	}
+	li {
+		list-style: none;
+		font-size: 1.5rem;
+	}
+}
+.cash-display {
+	color: gold;
+}
