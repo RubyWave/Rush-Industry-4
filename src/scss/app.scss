@@ -18,6 +18,10 @@ body {
 	width: 100%;
 	height: 100%;
 	z-index: 2;
+	pointer-events: none;
+	& * {
+		pointer-events: auto;
+	}
 }
 .right-ui-container {
 	position: absolute;
@@ -38,4 +42,35 @@ body {
 }
 .cash-display {
 	color: gold;
+}
+.bottom-ui-container {
+	position: absolute;
+	bottom: 2rem;
+	left: 2rem;
+	right: 2rem;
+	margin-inline: auto;
+	width: fit-content;
+}
+.buildings-bar {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5rem;
+	list-style: none;
+}
+.building-button {
+	width: 4rem;
+	height: 4rem;
+	padding: 1rem;
+	border: 2px gray solid;
+	color: red;
+	background: whitesmoke;
+	text-align: center;
+	font-size: 1.5rem;
+	cursor: pointer;
+	&.selected {
+		background: gold;
+		color: black;
+		box-shadow: 0 0 10px 0 rgba(255, 215, 0, 0.5);
+	}
 }

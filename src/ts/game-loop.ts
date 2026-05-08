@@ -21,8 +21,6 @@ export function gameLoop(
 		onTick(TICK_MS);
 	}, TICK_MS);
 
-	console.log("gameLoop started");
-
 	return () => {
 		window.clearInterval(id);
 	};

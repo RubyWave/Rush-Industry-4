@@ -1,3 +1,4 @@
+import { BuildingName } from "./buildings";
 import { availableResources, Resource, ResourcesStorage } from "./resources";
 
 /**
@@ -12,6 +13,8 @@ export interface GameStates {
 	resourcesStorage: ResourcesStorage;
 	/** Cash in the bank */
 	cash: number;
+	/** Selected building  */
+	selectedBuilding: BuildingName | null;
 }
 
 export function createGameStates(): GameStates {
@@ -27,5 +30,6 @@ export function createGameStates(): GameStates {
 			),
 		},
 		cash: 0,
+		selectedBuilding: null,
 	};
 }

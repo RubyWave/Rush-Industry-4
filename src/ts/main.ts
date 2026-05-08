@@ -9,7 +9,6 @@ document.addEventListener("DOMContentLoaded", () => {
 	initiateGameSetup();
 	gameLoop(
 		() => {
-			console.log("gameLoop tick, ticks:" + gameStatesGlobal.tickCounter);
 			gameStatesGlobal.tickCounter++;
 			emitChange();
 		},

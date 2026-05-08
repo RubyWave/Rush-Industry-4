@@ -3,15 +3,17 @@ create two HTML elements and add it to the body. One is a canvas, the second one
 */
 
 import React from "react";
-import { initiateBoard } from "./board";
+import { bindBoardClick, Board, initiateBoard } from "./board/the-board";
 import { bindBasicKeyboardControls } from "./controls";
 import { createRoot } from "react-dom/client";
 import { ResourcesStorage } from "./ui/ResourcesStorage";
 import { GameTimer } from "./ui/GameTimer";
 import { CashDisplay } from "./ui/CashDisplay";
+import { BuildingsBar } from "./ui/BuildingsBar";
 
 export let gameCanvas: HTMLCanvasElement;
 export let uiLayer: HTMLDivElement;
+export let board: Board;
 
 const initiateGameSetup = () => {
 	gameCanvas = document.createElement("canvas");
@@ -22,7 +24,8 @@ const initiateGameSetup = () => {
 	document.body.appendChild(gameCanvas);
 	document.body.appendChild(uiLayer);
 
-	initiateBoard();
+	board = initiateBoard();
+	bindBoardClick(board, gameCanvas);
 	bindBasicKeyboardControls();
 
 	renderUI();
@@ -35,6 +38,9 @@ function renderUI() {
 				<GameTimer />
 				<ResourcesStorage />
 				<CashDisplay />
+			</div>
+			<div className="bottom-ui-container">
+				<BuildingsBar />
 			</div>
 		</React.StrictMode>,
 	);
