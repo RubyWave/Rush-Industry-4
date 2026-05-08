@@ -34,6 +34,7 @@ export const BuildingsBar = () => {
 						}}
 					>
 						{"(" + ++index + ")"}
+						<br />
 						{building.namePretty}
 					</li>
 				);

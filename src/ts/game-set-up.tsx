@@ -12,6 +12,7 @@ import { CashDisplay } from "./ui/CashDisplay";
 import { BuildingsBar } from "./ui/BuildingsBar";
 import { GameLog } from "./ui/GameLog";
 import { BuildingStats } from "./ui/BuldingStats";
+import { GameInstructions } from "./ui/GameInstructions";
 
 export let gameCanvas: HTMLCanvasElement;
 export let uiLayer: HTMLDivElement;
@@ -46,6 +47,9 @@ function renderUI() {
 				<GameTimer />
 				<ResourcesStorage />
 				<CashDisplay />
+			</div>
+			<div className="left-bottom-ui-container">
+				<GameInstructions />
 			</div>
 			<div className="bottom-ui-container">
 				<BuildingsBar />

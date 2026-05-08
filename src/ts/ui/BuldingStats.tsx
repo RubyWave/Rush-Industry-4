@@ -10,6 +10,7 @@ export const BuildingStats = () => {
 		subscribe,
 		() => getSnapshot().selectedBuilding,
 	);
+	if (!selectedBuilding) return null;
 	return (
 		<div className="building-stats">
 			<h3 className="building-stats__heading">
@@ -19,6 +20,16 @@ export const BuildingStats = () => {
 				}{" "}
 				Stats
 			</h3>
+			<span className="building-stats__cost">
+				cost:{" "}
+				<span>
+					{
+						availableBuildings[selectedBuilding as BuildingName]
+							?.baseCost
+					}
+					€
+				</span>
+			</span>
 			<div className="building-stats__content">
 				<div className="building-stats__inputs">
 					<h4>Inputs</h4>

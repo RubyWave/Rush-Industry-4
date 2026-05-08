@@ -12,6 +12,34 @@ export type GameLoopTick = (deltaMs: number) => void;
 
 export type GameLoopShouldRun = () => boolean;
 
+function gameOver() {
+	let leftoversSellCash = 0;
+	gameStatesGlobal.resourcesStorage.resources.forEach((resource) => {
+		leftoversSellCash += resource.amount * resource.resource.basePrice;
+		resource.amount = 0;
+	});
+	leftoversSellCash = Number(leftoversSellCash.toFixed(2));
+	gameStatesGlobal.gameLog = [
+		...gameStatesGlobal.gameLog,
+		{
+			message: "Sold leftovers for: " + leftoversSellCash + "€",
+			logType: "info",
+		},
+	];
+	gameStatesGlobal.cash += leftoversSellCash;
+	gameStatesGlobal.runState = false;
+	gameStatesGlobal.gameLog = [
+		...gameStatesGlobal.gameLog,
+		{
+			message:
+				"Game over! Your final score is: " +
+				gameStatesGlobal.cash +
+				"€",
+			logType: "success",
+		},
+	];
+}
+
 /**
  * Runs `onTick` at the configured tick rate until the returned stop function is called.
  * When `shouldRun` is provided and returns false, ticks are skipped (pause) without stopping the interval.
@@ -30,17 +58,7 @@ export function gameLoop(
 			gameStatesGlobal.tickCounter >=
 			settings.gameTime * settings.tickInterval
 		) {
-			gameStatesGlobal.runState = false;
-			gameStatesGlobal.gameLog = [
-				...gameStatesGlobal.gameLog,
-				{
-					message:
-						"Game over! Your final score is: " +
-						gameStatesGlobal.cash +
-						"€",
-					logType: "success",
-				},
-			];
+			gameOver();
 		}
 
 		emitChange();

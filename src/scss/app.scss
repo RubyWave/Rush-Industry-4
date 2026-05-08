@@ -66,11 +66,22 @@ body {
 	transform: translateX(-50%);
 	width: 50%;
 	max-height: 10rem;
-	background: white;
-	border: gray solid 1px;
-	padding: 0.5rem;
 
 	.building-stats {
+		background: white;
+		border: gray solid 1px;
+		padding: 0.5rem;
+		&__cost {
+			display: flex;
+			gap: 0.5rem;
+			background: #2a3f55;
+			padding: 0.25rem;
+			width: max-content;
+			color: white;
+			span {
+				color: gold;
+			}
+		}
 		&__heading {
 			margin: 0;
 			margin-bottom: 0.25rem;
@@ -116,6 +127,13 @@ body {
 .cash-display {
 	color: gold;
 }
+.left-bottom-ui-container {
+	position: absolute;
+	bottom: 2rem;
+	left: 2rem;
+	width: 20rem;
+	color: white;
+}
 .bottom-ui-container {
 	position: absolute;
 	bottom: 2rem;
@@ -132,11 +150,11 @@ body {
 	list-style: none;
 }
 .building-button {
-	width: 4rem;
-	height: 4rem;
-	padding: 1rem;
+	width: 6rem;
+	height: 6rem;
+	padding: 0.5rem;
 	border: 2px gray solid;
-	color: red;
+	color: #2a3f55;
 	background: whitesmoke;
 	text-align: center;
 	font-size: 1.5rem;

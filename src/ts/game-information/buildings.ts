@@ -53,7 +53,7 @@ export const availableBuildings: AvailableBuildings = {
 		mapIcon: "Fe",
 		baseCost: 125,
 		inputs: [],
-		outputs: [{ resource: availableResources.iron, amount: 3 }],
+		outputs: [{ resource: availableResources.iron, amount: 2 }],
 		pointingBuilding: false,
 		specialFunctions: "output",
 	},
@@ -66,9 +66,12 @@ export const availableBuildings: AvailableBuildings = {
 			{ resource: availableResources.iron, amount: 5 },
 			{ resource: availableResources.coal, amount: 1 },
 		],
-		outputs: [{ resource: availableResources.steel, amount: 5 }],
+		outputs: [{ resource: availableResources.steel, amount: 6 }],
 		pointingBuilding: false,
 		specialFunctions: "inputOutput",
+		specialFunctionsDescription: [
+			"This building will not output anything if no inputs are provided.",
+		],
 	},
 	market: {
 		name: "market",
