@@ -300,12 +300,9 @@ bh_unicode_properties.cache
 # https://packagecontrol.io/packages/sublime-github
 GitHub.sublime-settings
 
-### VisualStudioCode ###
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
+### VisualStudioCode / Cursor ###
+.vscode/
+.cursor/
 *.code-workspace
 
 # Local History for Visual Studio Code
