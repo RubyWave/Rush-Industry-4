@@ -1,5 +1,6 @@
 import { useSyncExternalStore } from "react";
 import { getSnapshot, subscribe } from "../game-information/gameStatesStore";
+import { settings } from "../game-information/settings";
 
 export const GameTimer = () => {
 	const gameRunning = useSyncExternalStore(
@@ -13,7 +14,9 @@ export const GameTimer = () => {
 
 	return (
 		<div className="game-timer">
-			<h3>Ticks ticked: {gameTimer}</h3>
+			<h3>
+				Seconds ticked: {Math.floor(gameTimer / settings.tickInterval)}
+			</h3>
 			<h3>Game running: {gameRunning ? "Yes" : "No"}</h3>
 		</div>
 	);

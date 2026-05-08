@@ -1,5 +1,8 @@
+import { settings } from "./game-information/settings";
+import { calculateResourceProduction } from "./tick-actions/resource-calculations";
+
 /** Target interval between ticks (~60 Hz). */
-const TICK_MS = 1000 / 5;
+const TICK_MS = 1000 / settings.tickInterval;
 
 export type GameLoopTick = (deltaMs: number) => void;
 
@@ -18,6 +21,7 @@ export function gameLoop(
 		if (!shouldRun()) {
 			return;
 		}
+		calculateResourceProduction();
 		onTick(TICK_MS);
 	}, TICK_MS);
 

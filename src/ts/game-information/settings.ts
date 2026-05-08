@@ -5,4 +5,5 @@ export const settings = {
 		rows: 8,
 	},
 	startingCash: 1000,
+	tickInterval: 5, // 5 ticks per second
 };

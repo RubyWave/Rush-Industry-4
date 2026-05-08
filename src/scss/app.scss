@@ -31,11 +31,13 @@ body {
 	color: white;
 }
 .game-log {
-	max-height: 50rem;
-	max-width: 20rem;
+	position: relative;
+	height: 20rem;
+	width: 15rem;
 	overflow-y: scroll;
-	-ms-overflow-style: none; /* Internet Explorer 10+ */
-	scrollbar-width: none; /* Firefox, Safari 18.2+, Chromium 121+ */
+	// -ms-overflow-style: none; /* Internet Explorer 10+ */
+	// scrollbar-width: none; /* Firefox, Safari 18.2+, Chromium 121+ */
+	
 	margin: 0;
 	padding: 0;
 	display: flex;
@@ -63,6 +65,7 @@ body {
 	right: 2rem;
 	width: max-content;
 	color: white;
+	width: 15rem;
 }
 .resources-storage {
 	ul {
