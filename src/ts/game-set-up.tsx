@@ -10,6 +10,7 @@ import { ResourcesStorage } from "./ui/ResourcesStorage";
 import { GameTimer } from "./ui/GameTimer";
 import { CashDisplay } from "./ui/CashDisplay";
 import { BuildingsBar } from "./ui/BuildingsBar";
+import { GameLog } from "./ui/GameLog";
 
 export let gameCanvas: HTMLCanvasElement;
 export let uiLayer: HTMLDivElement;
@@ -34,6 +35,9 @@ const initiateGameSetup = () => {
 function renderUI() {
 	createRoot(uiLayer).render(
 		<React.StrictMode>
+			<div className="left-ui-container">
+				<GameLog />
+			</div>
 			<div className="right-ui-container">
 				<GameTimer />
 				<ResourcesStorage />

@@ -4,4 +4,5 @@ export const settings = {
 		cols: 16,
 		rows: 8,
 	},
+	startingCash: 1000,
 };

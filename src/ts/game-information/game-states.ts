@@ -1,6 +1,8 @@
 import { BuildingName } from "./buildings";
 import { availableResources, Resource, ResourcesStorage } from "./resources";
+import { settings } from "./settings";
 
+export type LogType = "info" | "error" | "warning" | "success";
 /**
  * Central snapshot of runtime simulation state. Extend this as the game grows.
  */
@@ -15,6 +17,8 @@ export interface GameStates {
 	cash: number;
 	/** Selected building  */
 	selectedBuilding: BuildingName | null;
+	/** Game log */
+	gameLog: { message: string; logType: LogType }[];
 }
 
 export function createGameStates(): GameStates {
@@ -29,7 +33,8 @@ export function createGameStates(): GameStates {
 				}),
 			),
 		},
-		cash: 0,
+		cash: settings.startingCash,
 		selectedBuilding: null,
+		gameLog: [{ message: "Welcome to the game!", logType: "info" }],
 	};
 }

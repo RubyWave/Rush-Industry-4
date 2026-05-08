@@ -23,6 +23,40 @@ body {
 		pointer-events: auto;
 	}
 }
+.left-ui-container {
+	position: absolute;
+	top: 2rem;
+	left: 2rem;
+	width: max-content;
+	color: white;
+}
+.game-log {
+	max-height: 50rem;
+	max-width: 20rem;
+	overflow-y: scroll;
+	-ms-overflow-style: none; /* Internet Explorer 10+ */
+	scrollbar-width: none; /* Firefox, Safari 18.2+, Chromium 121+ */
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-direction: column-reverse;
+	li {
+		list-style: none;
+		font-size: 1rem;
+	}
+	.log-info {
+		color: white;
+	}
+	.log-error {
+		color: red;
+	}
+	.log-warning {
+		color: yellow;
+	}
+	.log-success {
+		color: green;
+	}
+}
 .right-ui-container {
 	position: absolute;
 	top: 2rem;

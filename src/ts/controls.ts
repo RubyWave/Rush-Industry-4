@@ -14,8 +14,14 @@ export function bindBasicKeyboardControls(): () => void {
 		}
 		event.preventDefault();
 		gameStatesGlobal.runState = !gameStatesGlobal.runState;
+		gameStatesGlobal.gameLog = [
+			...gameStatesGlobal.gameLog,
+			{
+				message: `Game ${gameStatesGlobal.runState ? "started" : "paused"}`,
+				logType: "info",
+			},
+		];
 		emitChange();
-		console.log("runState:", gameStatesGlobal.runState);
 	};
 
 	window.addEventListener("keydown", onKeyDown);
