@@ -15,7 +15,9 @@ export const GameTimer = () => {
 	return (
 		<div className="game-timer">
 			<h3>
-				Seconds ticked: {Math.floor(gameTimer / settings.tickInterval)}
+				Seconds left:{" "}
+				{settings.gameTime -
+					Math.floor(gameTimer / settings.tickInterval)}
 			</h3>
 			<h3>Game running: {gameRunning ? "Yes" : "No"}</h3>
 		</div>

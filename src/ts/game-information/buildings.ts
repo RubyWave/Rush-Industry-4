@@ -29,6 +29,8 @@ export interface Building {
 	pointingDirection?: PointingDirection;
 	/** Special functions that the building can perform */
 	specialFunctions: BuildingFunction;
+	/** Description of the special functions */
+	specialFunctionsDescription?: string[];
 }
 
 interface AvailableBuildings {
@@ -77,5 +79,9 @@ export const availableBuildings: AvailableBuildings = {
 		outputs: [],
 		pointingBuilding: true,
 		specialFunctions: "buysFromDirection",
+		specialFunctionsDescription: [
+			"Buys resources from the direction of the building. This is only way to sell the resources.",
+			"To change the direction, click R while building is selected.",
+		],
 	},
 };

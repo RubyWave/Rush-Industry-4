@@ -1,4 +1,7 @@
-import { emitChange } from "./game-information/gameStatesStore";
+import {
+	emitChange,
+	gameStatesGlobal,
+} from "./game-information/gameStatesStore";
 import { settings } from "./game-information/settings";
 import { calculateResourceProduction } from "./tick-actions/resource-calculations";
 
@@ -23,6 +26,22 @@ export function gameLoop(
 			return;
 		}
 		calculateResourceProduction();
+		if (
+			gameStatesGlobal.tickCounter >=
+			settings.gameTime * settings.tickInterval
+		) {
+			gameStatesGlobal.runState = false;
+			gameStatesGlobal.gameLog = [
+				...gameStatesGlobal.gameLog,
+				{
+					message:
+						"Game over! Your final score is: " +
+						gameStatesGlobal.cash +
+						"€",
+					logType: "success",
+				},
+			];
+		}
 
 		emitChange();
 		onTick(TICK_MS);

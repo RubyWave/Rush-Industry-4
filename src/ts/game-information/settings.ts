@@ -6,4 +6,5 @@ export const settings = {
 	},
 	startingCash: 1000,
 	tickInterval: 5, // 5 ticks per second
+	gameTime: 30, // time for the game in seconds
 };

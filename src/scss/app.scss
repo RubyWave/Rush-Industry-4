@@ -37,7 +37,7 @@ body {
 	overflow-y: scroll;
 	// -ms-overflow-style: none; /* Internet Explorer 10+ */
 	// scrollbar-width: none; /* Firefox, Safari 18.2+, Chromium 121+ */
-	
+
 	margin: 0;
 	padding: 0;
 	display: flex;
@@ -57,6 +57,35 @@ body {
 	}
 	.log-success {
 		color: green;
+	}
+}
+.center-top-ui-container {
+	position: absolute;
+	top: 2rem;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 50%;
+	max-height: 10rem;
+	background: white;
+	border: gray solid 1px;
+	padding: 0.5rem;
+
+	.building-stats {
+		&__heading {
+			margin: 0;
+			margin-bottom: 0.25rem;
+		}
+		&__content {
+			display: grid;
+			grid-template-columns: 1fr 1fr 1fr;
+			gap: 0.5rem;
+			h4 {
+				margin: 0;
+			}
+			ul {
+				margin: 0;
+			}
+		}
 	}
 }
 .right-ui-container {

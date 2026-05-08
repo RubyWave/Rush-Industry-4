@@ -24,9 +24,19 @@ function digitFromKeyboardCode(code: string): number | null {
  */
 export function bindBasicKeyboardControls(): () => void {
 	const onKeyDown = (event: KeyboardEvent): void => {
-		event.preventDefault();
 		switch (event.code) {
 			case "Space":
+				event.preventDefault();
+				if (gameStatesGlobal.runState) {
+					gameStatesGlobal.gameLog = [
+						...gameStatesGlobal.gameLog,
+						{
+							message: `Can't pause game while it's running`,
+							logType: "warning",
+						},
+					];
+					break;
+				}
 				gameStatesGlobal.runState = !gameStatesGlobal.runState;
 				gameStatesGlobal.gameLog = [
 					...gameStatesGlobal.gameLog,
@@ -38,6 +48,7 @@ export function bindBasicKeyboardControls(): () => void {
 
 				break;
 			case "KeyR":
+				event.preventDefault();
 				if (gameStatesGlobal.pointingDirection === "upLeft") {
 					gameStatesGlobal.pointingDirection = "upRight";
 				} else if (gameStatesGlobal.pointingDirection === "upRight") {
@@ -73,6 +84,7 @@ export function bindBasicKeyboardControls(): () => void {
 			case "Numpad7":
 			case "Numpad8":
 			case "Numpad9": {
+				event.preventDefault();
 				const digit = digitFromKeyboardCode(event.code);
 				if (digit === null) {
 					break;

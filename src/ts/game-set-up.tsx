@@ -11,6 +11,7 @@ import { GameTimer } from "./ui/GameTimer";
 import { CashDisplay } from "./ui/CashDisplay";
 import { BuildingsBar } from "./ui/BuildingsBar";
 import { GameLog } from "./ui/GameLog";
+import { BuildingStats } from "./ui/BuldingStats";
 
 export let gameCanvas: HTMLCanvasElement;
 export let uiLayer: HTMLDivElement;
@@ -37,6 +38,9 @@ function renderUI() {
 		<React.StrictMode>
 			<div className="left-ui-container">
 				<GameLog />
+			</div>
+			<div className="center-top-ui-container">
+				<BuildingStats />
 			</div>
 			<div className="right-ui-container">
 				<GameTimer />
