@@ -74,12 +74,10 @@ body {
 		&__cost {
 			display: flex;
 			gap: 0.5rem;
-			background: #2a3f55;
 			padding: 0.25rem;
 			width: max-content;
-			color: white;
 			span {
-				color: gold;
+				color: rgb(161, 137, 0);
 			}
 		}
 		&__heading {

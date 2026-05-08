@@ -1,6 +1,6 @@
 {
   "name": "rush-industry-4",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Rush Industry 4",
   "main": "index.js",
   "scripts": {

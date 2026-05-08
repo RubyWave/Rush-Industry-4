@@ -726,3 +726,5 @@ webpack.custom.config.js
 package-lock.json
 acf-pro-stubs.php
 _debug.md
+
+/dist
