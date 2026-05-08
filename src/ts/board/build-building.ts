@@ -28,7 +28,14 @@ export function buildBuilding(index: CellIndex) {
 	}
 	gameStatesGlobal.cash -= building.baseCost;
 
-	cell.building = building;
+	// this convoluted  thingy is to not change pointing direction of all buildings, just this bulid this very moment
+	cell.building =
+		building.pointingBuilding && gameStatesGlobal.pointingDirection !== null
+			? {
+					...building,
+					pointingDirection: gameStatesGlobal.pointingDirection,
+				}
+			: { ...building };
 	gameStatesGlobal.gameLog = [
 		...gameStatesGlobal.gameLog,
 		{

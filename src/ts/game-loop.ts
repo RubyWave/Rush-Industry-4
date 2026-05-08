@@ -1,3 +1,4 @@
+import { emitChange } from "./game-information/gameStatesStore";
 import { settings } from "./game-information/settings";
 import { calculateResourceProduction } from "./tick-actions/resource-calculations";
 
@@ -22,6 +23,8 @@ export function gameLoop(
 			return;
 		}
 		calculateResourceProduction();
+
+		emitChange();
 		onTick(TICK_MS);
 	}, TICK_MS);
 

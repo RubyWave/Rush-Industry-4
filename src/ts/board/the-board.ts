@@ -3,25 +3,23 @@
  *       stored in classical column / row coordinates (odd-r offset layout).
  */
 
-import { Building } from "../game-information/buildings";
+import { Building, PointingDirection } from "../game-information/buildings";
+import { gameStatesGlobal } from "../game-information/gameStatesStore";
 import { settings } from "../game-information/settings";
 import { gameCanvas } from "../game-set-up";
 import { buildBuilding } from "./build-building";
-
-/** One cell on the board: zero-based column and row indices. */
-export type BoardCell = {
-	/** Zero-based column index. */
-	col: number;
-	/** Zero-based row index. */
-	row: number;
-	/** Building on the cell */
-	building: Building | null;
-};
 
 /**
  * @brief Board address as a tuple: `[column, row]` matches `hexes[col][row]`.
  */
 export type CellIndex = readonly [column: number, row: number];
+
+/** One cell on the board: grid index and optional building. */
+export type BoardCell = {
+	/** Cell position `[column, row]` on the board. */
+	index: CellIndex;
+	building: Building | null;
+};
 
 type Axial = { q: number; r: number };
 type Cube = { x: number; y: number; z: number };
@@ -63,6 +61,65 @@ function axialToOffsetOddR(q: number, r: number): { col: number; row: number } {
 	const row = r;
 	const col = q + (row - (row & 1)) / 2;
 	return { col, row };
+}
+
+/**
+ * Axial step to the hex neighbor in `dir` (same convention as `pointingDirectionUnit`).
+ */
+function pointingDirectionToAxialDelta(dir: Exclude<PointingDirection, null>): {
+	dq: number;
+	dr: number;
+} {
+	switch (dir) {
+		case "right":
+			return { dq: 1, dr: 0 };
+		case "left":
+			return { dq: -1, dr: 0 };
+		case "upRight":
+			return { dq: 1, dr: -1 };
+		case "upLeft":
+			return { dq: 0, dr: -1 };
+		case "downRight":
+			return { dq: 0, dr: 1 };
+		case "downLeft":
+			return { dq: -1, dr: 1 };
+	}
+}
+
+/**
+ * Neighbor of `index` in direction `dir`, or `null` if `dir` is null or outside the board.
+ */
+export function getNeighborCellIndex(
+	board: Board,
+	index: CellIndex,
+	dir: PointingDirection,
+): CellIndex | null {
+	if (dir === null) {
+		return null;
+	}
+	const [col, row] = index;
+	const { q, r } = offsetToAxialOddR(col, row);
+	const { dq, dr } = pointingDirectionToAxialDelta(dir);
+	const { col: ncol, row: nrow } = axialToOffsetOddR(q + dq, r + dr);
+	if (ncol < 0 || ncol >= board.cols || nrow < 0 || nrow >= board.rows) {
+		return null;
+	}
+	return [ncol, nrow];
+}
+
+/**
+ * Neighbor `BoardCell` in direction `dir`, or `undefined` if off-board or `dir` is null.
+ */
+export function getNeighborCell(
+	board: Board,
+	index: CellIndex,
+	dir: PointingDirection,
+): BoardCell | undefined {
+	const next = getNeighborCellIndex(board, index, dir);
+	if (!next) {
+		return undefined;
+	}
+	return getCell(board, next);
 }
 
 /**
@@ -128,7 +185,7 @@ function createBoardCells(): BoardCell[][] {
 	for (let col = 0; col < settings.board.cols; col++) {
 		hexes[col] = [];
 		for (let row = 0; row < settings.board.rows; row++) {
-			hexes[col][row] = { col, row, building: null };
+			hexes[col][row] = { index: [col, row], building: null };
 		}
 	}
 	return hexes;
@@ -157,9 +214,173 @@ function getGridCenterOffset(board: Board): { x: number; y: number } {
 }
 
 let lastClickedCell: CellIndex | null = null;
+let hoveredCell: CellIndex | null = null;
+
+/** Set in `initiateBoard` so `redrawBoard` can repaint after global UI state (e.g. direction) changes. */
+let activeBoard: Board | null = null;
 
 export function getLastClickedCell(): CellIndex | null {
 	return lastClickedCell;
+}
+
+/**
+ * Outward unit vector for each hex-neighbor direction (canvas coords, +y down),
+ * consistent with `axialToPixel` / odd-r layout.
+ */
+function pointingDirectionUnit(
+	dir: PointingDirection,
+): { x: number; y: number } | null {
+	if (dir === null) {
+		return null;
+	}
+	const h = Math.sqrt(3) / 2;
+	switch (dir) {
+		case "right":
+			return { x: 1, y: 0 };
+		case "left":
+			return { x: -1, y: 0 };
+		case "upRight":
+			return { x: 0.5, y: -h };
+		case "upLeft":
+			return { x: -0.5, y: -h };
+		case "downRight":
+			return { x: 0.5, y: h };
+		case "downLeft":
+			return { x: -0.5, y: h };
+		default:
+			return null;
+	}
+}
+
+/** Flat isosceles triangle on the hovered hex: base on the outer edge facing `dir`, apex inward toward center. */
+function drawPointingDirectionMarker(
+	ctx: CanvasRenderingContext2D,
+	cx: number,
+	cy: number,
+	size: number,
+	dir: PointingDirection,
+): void {
+	const u = pointingDirectionUnit(dir);
+	if (!u) {
+		return;
+	}
+	const len = Math.hypot(u.x, u.y);
+	const ux = u.x / len;
+	const uy = u.y / len;
+
+	const apothem = size * (Math.sqrt(3) / 2);
+	const triH = size * 0.22;
+	const halfBase = size * 0.24;
+	const tx = -uy;
+	const ty = ux;
+
+	const edgeMidX = cx + apothem * ux;
+	const edgeMidY = cy + apothem * uy;
+	/** Apex sits inside the hex, pointing toward the center (base stays on the outer edge). */
+	const apexX = edgeMidX - triH * ux;
+	const apexY = edgeMidY - triH * uy;
+	const b1x = edgeMidX + halfBase * tx;
+	const b1y = edgeMidY + halfBase * ty;
+	const b2x = edgeMidX - halfBase * tx;
+	const b2y = edgeMidY - halfBase * ty;
+
+	ctx.beginPath();
+	ctx.moveTo(apexX, apexY);
+	ctx.lineTo(b1x, b1y);
+	ctx.lineTo(b2x, b2y);
+	ctx.closePath();
+	ctx.fillStyle = "rgba(255, 180, 60, 0.95)";
+	ctx.strokeStyle = "#b45309";
+	ctx.lineWidth = 1.25;
+	ctx.fill();
+	ctx.stroke();
+}
+
+/**
+ * Arrow along `dir`: default shaft from center outward; when `reverse`, shaft from edge inward (market “pulls” from neighbor).
+ */
+function drawBuildingDirectionArrow(
+	ctx: CanvasRenderingContext2D,
+	cx: number,
+	cy: number,
+	size: number,
+	dir: PointingDirection,
+	reverse: boolean,
+): void {
+	const u = pointingDirectionUnit(dir);
+	if (!u) {
+		return;
+	}
+	const uLen = Math.hypot(u.x, u.y);
+	const ux = u.x / uLen;
+	const uy = u.y / uLen;
+
+	const apothem = size * (Math.sqrt(3) / 2);
+	const shaftEndDist = apothem * 0.78;
+	const headLength = size * 0.22;
+	const headHalfWidth = size * 0.14;
+	const px = -uy;
+	const py = ux;
+
+	ctx.save();
+	ctx.strokeStyle = "#1d4ed8";
+	ctx.fillStyle = "#1d4ed8";
+	ctx.lineWidth = Math.max(3, size * 0.14);
+	ctx.lineCap = "round";
+	ctx.lineJoin = "round";
+
+	if (!reverse) {
+		const tipX = cx + ux * shaftEndDist;
+		const tipY = cy + uy * shaftEndDist;
+		const baseX = tipX - ux * headLength;
+		const baseY = tipY - uy * headLength;
+
+		ctx.beginPath();
+		ctx.moveTo(cx, cy);
+		ctx.lineTo(baseX, baseY);
+		ctx.stroke();
+
+		ctx.beginPath();
+		ctx.moveTo(tipX, tipY);
+		ctx.lineTo(baseX + px * headHalfWidth, baseY + py * headHalfWidth);
+		ctx.lineTo(baseX - px * headHalfWidth, baseY - py * headHalfWidth);
+		ctx.closePath();
+		ctx.fill();
+	} else {
+		const outerX = cx + ux * shaftEndDist;
+		const outerY = cy + uy * shaftEndDist;
+		const apexDistFromCenter = size * 0.18;
+		const apexX = cx + ux * apexDistFromCenter;
+		const apexY = cy + uy * apexDistFromCenter;
+		const baseMidX = apexX + ux * headLength;
+		const baseMidY = apexY + uy * headLength;
+
+		ctx.beginPath();
+		ctx.moveTo(outerX, outerY);
+		ctx.lineTo(baseMidX, baseMidY);
+		ctx.stroke();
+
+		ctx.beginPath();
+		ctx.moveTo(apexX, apexY);
+		ctx.lineTo(
+			baseMidX + px * headHalfWidth,
+			baseMidY + py * headHalfWidth,
+		);
+		ctx.lineTo(
+			baseMidX - px * headHalfWidth,
+			baseMidY - py * headHalfWidth,
+		);
+		ctx.closePath();
+		ctx.fill();
+	}
+	ctx.restore();
+}
+
+/** Repaint the board after changes that are not triggered by canvas events (e.g. keyboard direction). */
+export function redrawBoard(): void {
+	if (activeBoard) {
+		renderBoard(activeBoard, gameCanvas);
+	}
 }
 
 /**
@@ -268,19 +489,27 @@ export function renderBoard(board: Board, canvas: HTMLCanvasElement) {
 	for (let col = 0; col < board.cols; col++) {
 		for (let row = 0; row < board.rows; row++) {
 			const cell = board.hexes[col]![row]!;
-			const { q, r } = offsetToAxialOddR(cell.col, cell.row);
+			const [cellCol, cellRow] = cell.index;
+			const { q, r } = offsetToAxialOddR(cellCol, cellRow);
 			const { x, y } = axialToPixel(q, r, board.hexSize);
 			// grid-space -> canvas: translate to canvas center, then subtract grid midpoint.
 			const cx = originX + x - mid.x;
 			const cy = originY + y - mid.y;
 
 			const clicked =
-				lastClickedCell?.[0] === cell.col &&
-				lastClickedCell?.[1] === cell.row;
+				lastClickedCell?.[0] === cellCol &&
+				lastClickedCell?.[1] === cellRow;
+			const hovered =
+				hoveredCell?.[0] === cellCol && hoveredCell?.[1] === cellRow;
+
 			if (clicked) {
 				ctx.fillStyle = "#cfe6ff";
 				ctx.strokeStyle = "#1f6feb";
 				ctx.lineWidth = 2.5;
+			} else if (hovered) {
+				ctx.fillStyle = "#dff3ff";
+				ctx.strokeStyle = "#2f81f7";
+				ctx.lineWidth = 2;
 			} else {
 				ctx.fillStyle = "#e8eef5";
 				ctx.strokeStyle = "#2a3f55";
@@ -292,12 +521,35 @@ export function renderBoard(board: Board, canvas: HTMLCanvasElement) {
 			ctx.stroke();
 
 			if (cell.building) {
+				const dir = cell.building.pointingDirection;
+				if (dir != null) {
+					drawBuildingDirectionArrow(
+						ctx,
+						cx,
+						cy,
+						board.hexSize,
+						dir,
+						cell.building.name === "market",
+					);
+				}
 				ctx.save();
 				ctx.fillStyle = "#0b1a2b";
 				ctx.textAlign = "center";
 				ctx.textBaseline = "middle";
 				ctx.font = `600 ${Math.max(10, Math.floor(board.hexSize * 0.65))}px system-ui`;
 				ctx.fillText(cell.building.mapIcon, cx, cy);
+				ctx.restore();
+			}
+
+			if (hovered && gameStatesGlobal.pointingDirection !== null) {
+				ctx.save();
+				drawPointingDirectionMarker(
+					ctx,
+					cx,
+					cy,
+					board.hexSize,
+					gameStatesGlobal.pointingDirection,
+				);
 				ctx.restore();
 			}
 		}
@@ -311,6 +563,7 @@ export function initiateBoard() {
 		rows: settings.board.rows,
 		hexes: createBoardCells(),
 	};
+	activeBoard = board;
 	renderBoard(board, gameCanvas);
 	return board;
 }
@@ -334,8 +587,42 @@ export function bindBoardClick(
 		renderBoard(board, canvas);
 	};
 
+	const onMouseMove = (event: MouseEvent): void => {
+		const index = canvasPointToCellIndex(
+			board,
+			canvas,
+			event.clientX,
+			event.clientY,
+		);
+
+		const sameAsCurrent =
+			(index === null && hoveredCell === null) ||
+			(index !== null &&
+				hoveredCell !== null &&
+				index[0] === hoveredCell[0] &&
+				index[1] === hoveredCell[1]);
+		if (sameAsCurrent) {
+			return;
+		}
+
+		hoveredCell = index;
+		renderBoard(board, canvas);
+	};
+
+	const onMouseLeave = (): void => {
+		if (!hoveredCell) {
+			return;
+		}
+		hoveredCell = null;
+		renderBoard(board, canvas);
+	};
+
 	canvas.addEventListener("click", onClick);
+	canvas.addEventListener("mousemove", onMouseMove);
+	canvas.addEventListener("mouseleave", onMouseLeave);
 	return () => {
 		canvas.removeEventListener("click", onClick);
+		canvas.removeEventListener("mousemove", onMouseMove);
+		canvas.removeEventListener("mouseleave", onMouseLeave);
 	};
 }

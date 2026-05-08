@@ -1,6 +1,15 @@
 import { availableResources, Resource } from "./resources";
 
 export type BuildingName = string;
+export type PointingDirection =
+	| "upLeft"
+	| "upRight"
+	| "left"
+	| "right"
+	| "downLeft"
+	| "downRight"
+	| null;
+export type BuildingFunction = "output" | "inputOutput" | "buysFromDirection";
 export interface Building {
 	/** Building name */
 	name: BuildingName;
@@ -14,6 +23,12 @@ export interface Building {
 	inputs: { resource: Resource; amount: number }[];
 	/** Building outputs, resource per second */
 	outputs: { resource: Resource; amount: number }[];
+	/** Some buildings only interact in specific direction */
+	pointingBuilding: boolean;
+	/** Pointing direction of the building */
+	pointingDirection?: PointingDirection;
+	/** Special functions that the building can perform */
+	specialFunctions: BuildingFunction;
 }
 
 interface AvailableBuildings {
@@ -27,6 +42,8 @@ export const availableBuildings: AvailableBuildings = {
 		baseCost: 100,
 		inputs: [],
 		outputs: [{ resource: availableResources.coal, amount: 5 }],
+		pointingBuilding: false,
+		specialFunctions: "output",
 	},
 	ironMine: {
 		name: "ironMine",
@@ -35,6 +52,8 @@ export const availableBuildings: AvailableBuildings = {
 		baseCost: 125,
 		inputs: [],
 		outputs: [{ resource: availableResources.iron, amount: 3 }],
+		pointingBuilding: false,
+		specialFunctions: "output",
 	},
 	steelMill: {
 		name: "steelMill",
@@ -46,5 +65,17 @@ export const availableBuildings: AvailableBuildings = {
 			{ resource: availableResources.coal, amount: 1 },
 		],
 		outputs: [{ resource: availableResources.steel, amount: 5 }],
+		pointingBuilding: false,
+		specialFunctions: "inputOutput",
+	},
+	market: {
+		name: "market",
+		namePretty: "Market",
+		mapIcon: "M",
+		baseCost: 100,
+		inputs: [],
+		outputs: [],
+		pointingBuilding: true,
+		specialFunctions: "buysFromDirection",
 	},
 };

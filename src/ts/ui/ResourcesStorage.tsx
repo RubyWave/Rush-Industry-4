@@ -12,7 +12,13 @@ export const ResourcesStorage = () => {
 			<ul className="resources-list">
 				{resources.map((resource) => (
 					<li key={resource.resource.name}>
-						{resource.resource.name}: {resource.amount}
+						<span>
+							{resource.resource.name}:{" "}
+							{Number(resource.amount.toFixed(2))}
+						</span>
+						<span className="resource-price">
+							{resource.resource.basePrice}€
+						</span>
 					</li>
 				))}
 			</ul>

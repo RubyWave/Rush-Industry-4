@@ -1,4 +1,4 @@
-import { BuildingName } from "./buildings";
+import { BuildingName, PointingDirection } from "./buildings";
 import { availableResources, Resource, ResourcesStorage } from "./resources";
 import { settings } from "./settings";
 
@@ -17,6 +17,8 @@ export interface GameStates {
 	cash: number;
 	/** Selected building  */
 	selectedBuilding: BuildingName | null;
+	/** Curently hovered hex pointing direction */
+	pointingDirection: PointingDirection | null;
 	/** Game log */
 	gameLog: { message: string; logType: LogType }[];
 }
@@ -35,6 +37,7 @@ export function createGameStates(): GameStates {
 		},
 		cash: settings.startingCash,
 		selectedBuilding: null,
+		pointingDirection: "upLeft",
 		gameLog: [{ message: "Welcome to the game!", logType: "info" }],
 	};
 }
