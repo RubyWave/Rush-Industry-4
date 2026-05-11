@@ -21,6 +21,12 @@ export const GameInstructions = () => {
 				pressing R. Mind rotation can&apos;t be changed later.
 			</p>
 			<p>
+				The board consist of {settings.board.cols} columns and{" "}
+				{settings.board.rows} rows. On some hexes, some resources are
+				spawned. While it is not required to build mines on specific
+				resource, doing so, increases the throughput of the building.
+			</p>
+			<p>
 				To earn money, you need to sell any resource using Market
 				building. At the end of the game, all your resources will be
 				sold automatically.
