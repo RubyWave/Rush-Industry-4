@@ -1,4 +1,4 @@
-import { PointingDirection } from "../game-information/buildings";
+import { PointingDirection } from "../buildings.ts/buildings";
 import { gameStatesGlobal } from "../game-information/gameStatesStore";
 import {
 	axialToPixel,
@@ -306,7 +306,7 @@ export function renderBoard(board: Board, canvas: HTMLCanvasElement) {
 
 			if (cell.building) {
 				const dir = cell.building.pointingDirection;
-				if (dir != null) {
+				if (cell.building.pointingBuilding && dir != null) {
 					drawBuildingDirectionArrow(
 						ctx,
 						cx,

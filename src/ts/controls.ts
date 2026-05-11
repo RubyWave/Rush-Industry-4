@@ -1,5 +1,5 @@
 import { redrawBoard } from "./board/the-board";
-import { availableBuildings } from "./game-information/buildings";
+import { availableBuildings } from "./buildings.ts/aviable-buildings";
 import {
 	emitChange,
 	gameStatesGlobal,

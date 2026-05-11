@@ -3,7 +3,7 @@
  *       stored in classical column / row coordinates (odd-r offset layout).
  */
 
-import { Building, PointingDirection } from "../game-information/buildings";
+import { Building, PointingDirection } from "../buildings.ts/buildings";
 import { Resource } from "../game-information/resources";
 import { settings } from "../game-information/settings";
 import { gameCanvas } from "../game-set-up";

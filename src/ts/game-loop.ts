@@ -15,7 +15,8 @@ export type GameLoopShouldRun = () => boolean;
 function gameOver() {
 	let leftoversSellCash = 0;
 	gameStatesGlobal.resourcesStorage.resources.forEach((resource) => {
-		leftoversSellCash += resource.amount * resource.resource.basePrice;
+		leftoversSellCash +=
+			resource.amount * resource.resource.basePrice * 0.5; // sold at the half of the base price, promote active selling
 		resource.amount = 0;
 	});
 	leftoversSellCash = Number(leftoversSellCash.toFixed(2));

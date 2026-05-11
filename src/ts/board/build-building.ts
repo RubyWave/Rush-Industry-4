@@ -4,7 +4,8 @@ import {
 } from "../game-information/gameStatesStore";
 import { CellIndex, getCell } from "./the-board";
 import { board } from "../game-set-up";
-import { availableBuildings } from "../game-information/buildings";
+import { availableBuildings } from "../buildings.ts/aviable-buildings";
+import { Building } from "../buildings.ts/buildings";
 
 export function buildBuilding(index: CellIndex) {
 	const building = Object.values(availableBuildings).find(
@@ -28,14 +29,25 @@ export function buildBuilding(index: CellIndex) {
 	}
 	gameStatesGlobal.cash -= building.baseCost;
 
+	if (
+		building.buildingResourceMine &&
+		cell.resourceOre?.name === building.buildingResourceMine.name
+	) {
+		building.throughputModifiers = [
+			{
+				modifier: 1.25,
+				type: "multiplicative",
+			},
+		];
+	}
+
+	const newBuilding: Building = {
+		...building,
+		pointingDirection: gameStatesGlobal.pointingDirection,
+	};
+
 	// this convoluted  thingy is to not change pointing direction of all buildings, just this bulid this very moment
-	cell.building =
-		building.pointingBuilding && gameStatesGlobal.pointingDirection !== null
-			? {
-					...building,
-					pointingDirection: gameStatesGlobal.pointingDirection,
-				}
-			: { ...building };
+	cell.building = newBuilding;
 	gameStatesGlobal.gameLog = [
 		...gameStatesGlobal.gameLog,
 		{

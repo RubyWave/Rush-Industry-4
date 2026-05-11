@@ -1,7 +1,11 @@
 import { gameStatesGlobal } from "../game-information/gameStatesStore";
 import { settings } from "../game-information/settings";
 import { board } from "../game-set-up";
-import { Building } from "../game-information/buildings";
+import {
+	Building,
+	getBuildingInput,
+	getBuildingOutput,
+} from "../buildings.ts/buildings";
 // import { CellIndex, getNeighborCell } from "../board/the-board";
 import { Resources } from "../game-information/resources";
 import { CellIndex, getNeighborCell } from "../board/the-board";
@@ -19,7 +23,10 @@ function inputOutputBuilding(
 		)!;
 		const index = allResources.indexOf(resource);
 
-		let adjustedInput = input.amount / settings.tickInterval; // resources are consumed per second
+		const outputAmount = getBuildingInput(building, input.resource);
+		if (outputAmount === 0) return allResources;
+
+		let adjustedInput = outputAmount / settings.tickInterval; // resources are consumed per second
 		adjustedInput = Number(adjustedInput.toFixed(2));
 
 		if (resource.amount < adjustedInput) {
@@ -36,7 +43,10 @@ function inputOutputBuilding(
 		)!;
 		const index = allResources.indexOf(resource);
 
-		let adjustedOutput = output.amount / settings.tickInterval; // resources are produced per second
+		const outputAmount = getBuildingOutput(building, output.resource);
+		if (outputAmount === 0) return allResources;
+
+		let adjustedOutput = outputAmount / settings.tickInterval; // resources are produced per second
 		adjustedOutput = Number(adjustedOutput.toFixed(2));
 
 		resource.amount += adjustedOutput;
@@ -86,7 +96,7 @@ export const calculateResourceProduction = () => {
 		row.forEach((cell) => {
 			if (cell.building) {
 				let allResources = gameStatesGlobal.resourcesStorage.resources;
-				switch (cell.building.specialFunctions) {
+				switch (cell.building.buildingFunction) {
 					case "inputOutput":
 					case "output":
 						allResources = inputOutputBuilding(

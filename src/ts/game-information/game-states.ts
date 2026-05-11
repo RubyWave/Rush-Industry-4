@@ -1,4 +1,4 @@
-import { BuildingName, PointingDirection } from "./buildings";
+import { BuildingName, PointingDirection } from "../buildings.ts/buildings";
 import { availableResources, Resource, ResourcesStorage } from "./resources";
 import { settings } from "./settings";
 

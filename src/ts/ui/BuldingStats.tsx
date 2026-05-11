@@ -1,9 +1,7 @@
 import { useSyncExternalStore } from "react";
 import { getSnapshot, subscribe } from "../game-information/gameStatesStore";
-import {
-	availableBuildings,
-	BuildingName,
-} from "../game-information/buildings";
+import { BuildingName } from "../buildings.ts/buildings";
+import { availableBuildings } from "../buildings.ts/aviable-buildings";
 
 export const BuildingStats = () => {
 	const selectedBuilding = useSyncExternalStore(
@@ -60,10 +58,23 @@ export const BuildingStats = () => {
 					<ul>
 						{availableBuildings[
 							selectedBuilding as BuildingName
-						]?.specialFunctionsDescription?.map(
+						]?.buildingFunctionDescription?.map(
 							(description, index) => (
 								<li key={index}>{description}</li>
 							),
+						)}
+						{availableBuildings[selectedBuilding as BuildingName]
+							?.buildingResourceMine && (
+							<li>
+								If placed on{" "}
+								{
+									availableBuildings[
+										selectedBuilding as BuildingName
+									]?.buildingResourceMine?.name
+								}{" "}
+								resource hex, throughput is increased by
+								1.25x:{" "}
+							</li>
 						)}
 					</ul>
 				</div>

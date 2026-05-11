@@ -1,4 +1,4 @@
-import { availableBuildings } from "../game-information/buildings";
+import { availableBuildings } from "../buildings.ts/aviable-buildings";
 import { settings } from "../game-information/settings";
 
 export const GameInstructions = () => {
@@ -29,7 +29,7 @@ export const GameInstructions = () => {
 			<p>
 				To earn money, you need to sell any resource using Market
 				building. At the end of the game, all your resources will be
-				sold automatically.
+				sold automatically at half of the base price.
 			</p>
 		</div>
 	);

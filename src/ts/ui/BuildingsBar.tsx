@@ -1,4 +1,4 @@
-import { availableBuildings } from "../game-information/buildings";
+import { availableBuildings } from "../buildings.ts/aviable-buildings";
 import { useSyncExternalStore } from "react";
 import {
 	emitChange,
