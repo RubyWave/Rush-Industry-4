@@ -97,34 +97,6 @@ body {
 		}
 	}
 }
-.right-ui-container {
-	position: absolute;
-	top: 2rem;
-	right: 2rem;
-	width: max-content;
-	color: white;
-	width: 15rem;
-}
-.resources-storage {
-	ul {
-		margin: 0;
-		padding: 0;
-	}
-	li {
-		list-style: none;
-		font-size: 1.5rem;
-		display: flex;
-		gap: 0.5rem;
-		justify-content: space-between;
-	}
-	.resource-price {
-		color: gold;
-		padding-left: 1rem;
-	}
-}
-.cash-display {
-	color: gold;
-}
 .left-bottom-ui-container {
 	position: absolute;
 	bottom: 2rem;

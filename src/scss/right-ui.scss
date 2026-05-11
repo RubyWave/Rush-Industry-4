@@ -1,0 +1,45 @@
+.right-ui-container {
+	position: absolute;
+	top: 2rem;
+	right: 2rem;
+	width: max-content;
+	color: white;
+	width: 20rem;
+}
+.resources-storage {
+	ul {
+		margin: 0;
+		padding: 0;
+	}
+	li {
+		list-style: none;
+		font-size: 1.5rem;
+		display: flex;
+		gap: 0.5rem;
+		justify-content: flex-start;
+        align-items: center;
+	}
+	.resource {
+		margin-bottom: 0.5rem;
+		&__short-name {
+			width: 2rem;
+			color: var(--resource-color);
+			background: color-mix(in srgb, var(--resource-color) 50%, white);
+			padding: 0.25rem;
+			border: 2px solid var(--resource-color);
+            position: relative;
+		}
+		&__amount-value {
+			margin-left: auto;
+		}
+		&__price {
+			color: gold;
+			padding-left: 1rem;
+			width: 2rem;
+		}
+	}
+}
+.cash-display {
+    font-size: 2rem;
+	color: gold;
+}
