@@ -83,7 +83,7 @@ function buysFromDirectionBuilding(
 		}
 
 		const cashEarned = adjustedOutput * output.resource.basePrice;
-		gameStatesGlobal.cash += cashEarned;
+		gameStatesGlobal.cash += Number(cashEarned.toFixed(2));
 
 		resource.amount -= adjustedOutput;
 		allResources[index] = resource;

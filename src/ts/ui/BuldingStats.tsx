@@ -9,6 +9,20 @@ export const BuildingStats = () => {
 		() => getSnapshot().selectedBuilding,
 	);
 	if (!selectedBuilding) return null;
+	const approximateInputCost = () => {
+		return availableBuildings[
+			selectedBuilding as BuildingName
+		]?.inputs.reduce((acc, input) => {
+			return acc + input.amount * input.resource.basePrice;
+		}, 0);
+	};
+	const approximateOutputCost = () => {
+		return availableBuildings[
+			selectedBuilding as BuildingName
+		]?.outputs.reduce((acc, output) => {
+			return acc + output.amount * output.resource.basePrice;
+		}, 0);
+	};
 	return (
 		<div className="building-stats">
 			<h3 className="building-stats__heading">
@@ -31,6 +45,11 @@ export const BuildingStats = () => {
 			<div className="building-stats__content">
 				<div className="building-stats__inputs">
 					<h4>Inputs</h4>
+					{approximateInputCost() ? (
+						<span className="building-stats__input-cost">
+							~{Number(approximateInputCost()?.toFixed(2))} €
+						</span>
+					) : null}
 					<ul>
 						{availableBuildings[
 							selectedBuilding as BuildingName
@@ -43,6 +62,11 @@ export const BuildingStats = () => {
 				</div>
 				<div className="building-stats__outputs">
 					<h4>Outputs</h4>
+					{approximateOutputCost() ? (
+						<span className="building-stats__output-cost">
+							~{Number(approximateOutputCost()?.toFixed(2))} €
+						</span>
+					) : null}
 					<ul>
 						{availableBuildings[
 							selectedBuilding as BuildingName
@@ -74,6 +98,13 @@ export const BuildingStats = () => {
 								}{" "}
 								resource hex, throughput is increased by
 								1.25x:{" "}
+							</li>
+						)}
+						{availableBuildings[selectedBuilding as BuildingName]
+							?.buildingFunction === "inputOutput" && (
+							<li>
+								This building will not output anything if no
+								inputs are provided.{" "}
 							</li>
 						)}
 					</ul>
