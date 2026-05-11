@@ -9,7 +9,11 @@ export type PointingDirection =
 	| "downLeft"
 	| "downRight"
 	| null;
-export type BuildingFunction = "output" | "inputOutput" | "buysFromDirection";
+export type BuildingFunction =
+	| "output"
+	| "inputOutput"
+	| "buysFromDirection"
+	| "bulldozeBuilding";
 
 /** Default throughput is 1. */
 export type BuildingThroughput = {

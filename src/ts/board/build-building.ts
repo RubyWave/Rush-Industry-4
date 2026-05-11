@@ -14,7 +14,6 @@ export function buildBuilding(index: CellIndex) {
 	if (!building) return;
 	const cell = getCell(board, index);
 	if (!cell) return;
-	if (cell.building) return;
 
 	if (gameStatesGlobal.cash < building.baseCost) {
 		gameStatesGlobal.gameLog = [
@@ -27,6 +26,19 @@ export function buildBuilding(index: CellIndex) {
 		emitChange();
 		return;
 	}
+	if (building.name === "bulldozer" && cell.building) {
+		gameStatesGlobal.gameLog = [
+			...gameStatesGlobal.gameLog,
+			{
+				message: `Bulldozed ${cell.building.namePretty} in cell ${index}`,
+				logType: "warning",
+			},
+		];
+		cell.building = null;
+		emitChange();
+		return;
+	}
+	if (cell.building) return;
 	gameStatesGlobal.cash -= building.baseCost;
 
 	if (

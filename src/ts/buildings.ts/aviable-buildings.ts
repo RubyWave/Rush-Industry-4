@@ -103,4 +103,18 @@ export const availableBuildings: AvailableBuildings = {
 			"To change the direction, click R while building is selected.",
 		],
 	},
+	bulldozer: {
+		name: "bulldozer",
+		namePretty: "Bulldozer",
+		mapIcon: "B",
+		baseCost: 0,
+		inputs: [],
+		outputs: [],
+		pointingBuilding: false,
+		buildingFunction: "bulldozeBuilding",
+		buildingFunctionDescription: [
+			"If placed on another building, that building will be destroyed.",
+			"No refunds for destroyed building costs.",
+		],
+	},
 };

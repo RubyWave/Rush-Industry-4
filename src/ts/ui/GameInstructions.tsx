@@ -15,10 +15,10 @@ export const GameInstructions = () => {
 				There are {Object.values(availableBuildings).length} buildings
 				to choose from. You can select them by clicking, or by
 				corresponding number on the keyboard. To build a building,
-				select one, and click on empty hex on the board. When building
-				is built, you can not change it, sell it, or demolish it. Some
-				buildings can be rotated before building them, do that by
-				pressing R. Mind rotation can&apos;t be changed later.
+				select one, and click on empty hex on the board. Some buildings
+				can be rotated before building them, do that by pressing R. Mind
+				rotation can&apos;t be changed later. You can destroy buildings
+				by placing Bulldozer on them, although you will get no refund.
 			</p>
 			<p>
 				The board consist of {settings.board.cols} columns and{" "}
