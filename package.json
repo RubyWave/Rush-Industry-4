@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack",
+    "build:prod": "webpack --mode production",
     "watch": "webpack --watch",
     "serve": "webpack serve",
     "lint": "eslint . --ext .ts --ext .tsx --",
