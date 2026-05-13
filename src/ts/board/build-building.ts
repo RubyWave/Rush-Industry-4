@@ -2,30 +2,25 @@ import {
 	emitChange,
 	gameStatesGlobal,
 } from "../game-information/gameStatesStore";
-import { CellIndex, getCell } from "./the-board";
+import { CellIndex, getCell, redrawBoard } from "./the-board";
 import { board } from "../game-set-up";
 import { availableBuildings } from "../buildings.ts/aviable-buildings";
-import { Building } from "../buildings.ts/buildings";
+import { Building, BuildingBlueprint } from "../buildings.ts/buildings";
 
-export function buildBuilding(index: CellIndex) {
-	const building = Object.values(availableBuildings).find(
-		(b) => b.name === gameStatesGlobal.selectedBuilding,
-	);
-	if (!building) return;
+export function buildBuilding(
+	index: CellIndex,
+	building?: Building,
+	blueprintBuilding = false,
+) {
+	if (!building) {
+		building = Object.values(availableBuildings).find(
+			(b) => b.name === gameStatesGlobal.selectedBuilding,
+		);
+		if (!building) return;
+	}
 	const cell = getCell(board, index);
 	if (!cell) return;
 
-	if (gameStatesGlobal.cash < building.baseCost) {
-		gameStatesGlobal.gameLog = [
-			...gameStatesGlobal.gameLog,
-			{
-				message: `Not enough cash to build ${building.namePretty}`,
-				logType: "error",
-			},
-		];
-		emitChange();
-		return;
-	}
 	if (building.name === "bulldozer" && cell.building) {
 		gameStatesGlobal.gameLog = [
 			...gameStatesGlobal.gameLog,
@@ -35,6 +30,39 @@ export function buildBuilding(index: CellIndex) {
 			},
 		];
 		cell.building = null;
+		emitChange();
+		return;
+	}
+
+	if (
+		gameStatesGlobal.cash < building.baseCost ||
+		(gameStatesGlobal.keyStates.shift && !blueprintBuilding)
+	) {
+		if (gameStatesGlobal.cash < building.baseCost) {
+			gameStatesGlobal.gameLog = [
+				...gameStatesGlobal.gameLog,
+				{
+					message: `Not enough cash to build ${building.namePretty} in cell ${index}`,
+					logType: "error",
+				},
+			];
+		}
+		const buildingBlueprint: BuildingBlueprint = {
+			building,
+			cellIndex: index,
+		};
+		gameStatesGlobal.buildQueue = [
+			...gameStatesGlobal.buildQueue,
+			buildingBlueprint,
+		];
+		cell.buildingBlueprint = buildingBlueprint;
+		gameStatesGlobal.gameLog = [
+			...gameStatesGlobal.gameLog,
+			{
+				message: `Adding ${building.namePretty} to build queue in cell ${index}`,
+				logType: "info",
+			},
+		];
 		emitChange();
 		return;
 	}
@@ -67,5 +95,19 @@ export function buildBuilding(index: CellIndex) {
 			logType: "success",
 		},
 	];
+	emitChange();
+	redrawBoard();
+}
+
+export function buildFromQueue() {
+	const buildingBlueprint = gameStatesGlobal.buildQueue[0];
+	if (!buildingBlueprint) return;
+	if (gameStatesGlobal.cash < buildingBlueprint.building.baseCost) return;
+	buildBuilding(
+		buildingBlueprint.cellIndex,
+		buildingBlueprint.building,
+		true,
+	);
+	gameStatesGlobal.buildQueue = gameStatesGlobal.buildQueue.slice(1);
 	emitChange();
 }

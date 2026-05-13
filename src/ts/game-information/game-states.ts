@@ -1,4 +1,10 @@
-import { BuildingName, PointingDirection } from "../buildings.ts/buildings";
+import { availableBuildings } from "../buildings.ts/aviable-buildings";
+import {
+	BuildingName,
+	BuildingBlueprint,
+	PointingDirection,
+} from "../buildings.ts/buildings";
+import { KeyStates } from "../controls";
 import { availableResources, Resource, ResourcesStorage } from "./resources";
 import { settings } from "./settings";
 
@@ -21,6 +27,10 @@ export interface GameStates {
 	pointingDirection: PointingDirection | null;
 	/** Game log */
 	gameLog: { message: string; logType: LogType }[];
+	/** Build queue. If there is not enough cash to build the building, it is added to the queue. When enough cash is available, the first building in the queue is built. */
+	buildQueue: BuildingBlueprint[];
+	/** Key states */
+	keyStates: KeyStates;
 }
 
 export function createGameStates(): GameStates {
@@ -39,5 +49,18 @@ export function createGameStates(): GameStates {
 		selectedBuilding: null,
 		pointingDirection: "upLeft",
 		gameLog: [{ message: "Welcome to the game!", logType: "info" }],
+		buildQueue: [
+			{
+				building: Object.values(availableBuildings).find(
+					(building) => building.name === "coalMine",
+				)!,
+				cellIndex: [0, 0],
+			},
+		],
+		keyStates: {
+			shift: false,
+			ctrl: false,
+			alt: false,
+		},
 	};
 }

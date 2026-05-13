@@ -1,4 +1,7 @@
-import { PointingDirection } from "../buildings.ts/buildings";
+import {
+	BuildingBlueprint,
+	PointingDirection,
+} from "../buildings.ts/buildings";
 import { gameStatesGlobal } from "../game-information/gameStatesStore";
 import {
 	axialToPixel,
@@ -194,6 +197,35 @@ function drawBuildingDirectionArrow(
 	ctx.restore();
 }
 
+/** Queued build preview: faint blue-tinted stroke for the icon; direction arrow at ~33% opacity. */
+function drawBuildingBlueprintOutline(
+	ctx: CanvasRenderingContext2D,
+	cx: number,
+	cy: number,
+	size: number,
+	blueprint: BuildingBlueprint,
+): void {
+	const b = blueprint.building;
+	const fontSize = Math.max(10, Math.floor(size * 0.65));
+
+	ctx.save();
+	ctx.textAlign = "center";
+	ctx.textBaseline = "middle";
+	ctx.font = `600 ${fontSize}px system-ui`;
+	ctx.lineJoin = "round";
+	ctx.lineCap = "round";
+	ctx.strokeStyle = "rgba(47, 129, 247, 0.38)";
+	ctx.lineWidth = Math.max(1.25, fontSize * 0.11);
+	ctx.strokeText(b.mapIcon, cx, cy);
+
+	const dir = b.pointingDirection ?? null;
+	if (b.pointingBuilding && dir != null) {
+		ctx.globalAlpha = 0.33;
+		drawBuildingDirectionArrow(ctx, cx, cy, size, dir, b.name === "market");
+	}
+	ctx.restore();
+}
+
 export function renderBoard(board: Board, canvas: HTMLCanvasElement) {
 	/**
 	 * Rendering pipeline overview:
@@ -323,6 +355,14 @@ export function renderBoard(board: Board, canvas: HTMLCanvasElement) {
 				ctx.font = `600 ${Math.max(10, Math.floor(board.hexSize * 0.65))}px system-ui`;
 				ctx.fillText(cell.building.mapIcon, cx, cy);
 				ctx.restore();
+			} else if (cell.buildingBlueprint) {
+				drawBuildingBlueprintOutline(
+					ctx,
+					cx,
+					cy,
+					board.hexSize,
+					cell.buildingBlueprint,
+				);
 			}
 
 			if (cell.resourceOre) {

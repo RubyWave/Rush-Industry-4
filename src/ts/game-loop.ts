@@ -1,3 +1,4 @@
+import { buildFromQueue } from "./board/build-building";
 import {
 	emitChange,
 	gameStatesGlobal,
@@ -55,6 +56,7 @@ export function gameLoop(
 			return;
 		}
 		calculateResourceProduction();
+		buildFromQueue();
 		if (
 			gameStatesGlobal.tickCounter >=
 			settings.gameTime * settings.tickInterval

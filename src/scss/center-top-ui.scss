@@ -1,0 +1,42 @@
+.center-top-ui-container {
+	position: absolute;
+	top: 2rem;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 40%;
+	max-height: 10rem;
+
+	.building-stats {
+		background: white;
+		border: gray solid 1px;
+		padding: 0.5rem;
+		&__cost {
+			display: flex;
+			gap: 0.5rem;
+			padding: 0.25rem;
+			width: max-content;
+			span {
+				color: rgb(161, 137, 0);
+			}
+		}
+		&__input-cost,
+		&__output-cost {
+			color: rgb(161, 137, 0);
+		}
+		&__heading {
+			margin: 0;
+			margin-bottom: 0.25rem;
+		}
+		&__content {
+			display: grid;
+			grid-template-columns: 1fr 1fr 1fr;
+			gap: 0.5rem;
+			h4 {
+				margin: 0;
+			}
+			ul {
+				margin: 0;
+			}
+		}
+	}
+}

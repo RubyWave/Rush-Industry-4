@@ -1,3 +1,4 @@
+import { CellIndex } from "../board/the-board";
 import { Resource } from "../game-information/resources";
 
 export type BuildingName = string;
@@ -22,6 +23,11 @@ export type BuildingThroughput = {
 	type: "addative" | "multiplicative";
 	description?: string;
 }[];
+
+export interface BuildingBlueprint {
+	building: Building;
+	cellIndex: CellIndex;
+}
 export interface Building {
 	/** Building name */
 	name: BuildingName;

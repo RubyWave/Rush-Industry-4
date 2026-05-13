@@ -44,7 +44,7 @@ export const availableBuildings: AvailableBuildings = {
 		mapIcon: "R",
 		baseCost: 25,
 		inputs: [],
-		outputs: [{ resource: availableResources.rubber, amount: 10 }],
+		outputs: [{ resource: availableResources.rubber, amount: 1 }],
 		pointingBuilding: false,
 		buildingFunction: "output",
 		buildingResourceMine: availableResources.rubber,

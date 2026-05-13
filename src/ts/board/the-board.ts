@@ -3,7 +3,11 @@
  *       stored in classical column / row coordinates (odd-r offset layout).
  */
 
-import { Building, PointingDirection } from "../buildings.ts/buildings";
+import {
+	Building,
+	BuildingBlueprint,
+	PointingDirection,
+} from "../buildings.ts/buildings";
 import { Resource } from "../game-information/resources";
 import { settings } from "../game-information/settings";
 import { gameCanvas } from "../game-set-up";
@@ -20,6 +24,7 @@ export type BoardCell = {
 	/** Cell position `[column, row]` on the board. */
 	index: CellIndex;
 	building: Building | null;
+	buildingBlueprint: BuildingBlueprint | null;
 	resourceOre: Resource | null;
 };
 
@@ -216,6 +221,7 @@ function createBoardCells(): BoardCell[][] {
 			hexes[col][row] = {
 				index: [col, row],
 				building: null,
+				buildingBlueprint: null,
 				resourceOre: null,
 			};
 		}

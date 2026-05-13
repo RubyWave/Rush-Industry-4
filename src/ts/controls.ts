@@ -5,6 +5,15 @@ import {
 	gameStatesGlobal,
 } from "./game-information/gameStatesStore";
 
+export interface KeyStates {
+	/** True if shift key is pressed */
+	shift: boolean;
+	/** True if ctrl key is pressed */
+	ctrl: boolean;
+	/** True if alt key is pressed */
+	alt: boolean;
+}
+
 function digitFromKeyboardCode(code: string): number | null {
 	if (code.startsWith("Digit")) {
 		const n = Number(code.slice(5));
@@ -103,6 +112,27 @@ export function bindBasicKeyboardControls(): () => void {
 				}
 				break;
 			}
+			case "ShiftLeft":
+			case "ShiftRight":
+				gameStatesGlobal.keyStates = {
+					...gameStatesGlobal.keyStates,
+					shift: !gameStatesGlobal.keyStates.shift,
+				};
+				break;
+			case "ControlLeft":
+			case "ControlRight":
+				gameStatesGlobal.keyStates = {
+					...gameStatesGlobal.keyStates,
+					ctrl: !gameStatesGlobal.keyStates.ctrl,
+				};
+				break;
+			case "AltLeft":
+			case "AltRight":
+				gameStatesGlobal.keyStates = {
+					...gameStatesGlobal.keyStates,
+					alt: !gameStatesGlobal.keyStates.alt,
+				};
+				break;
 			default:
 				break;
 		}

@@ -1,0 +1,23 @@
+.right-bottom-ui-container {
+	position: absolute;
+	bottom: 2rem;
+	right: 2rem;
+	width: 20rem;
+	color: white;
+	ul {
+		display: flex;
+		flex-direction: column-reverse;
+	}
+	.build-queue-item {
+		list-style: none;
+		font-size: 1rem;
+		display: flex;
+		gap: 0.5rem;
+		justify-content: flex-start;
+		align-items: center;
+		margin-bottom: 0.5rem;
+		&__missing-cost {
+			color: red;
+		}
+	}
+}
