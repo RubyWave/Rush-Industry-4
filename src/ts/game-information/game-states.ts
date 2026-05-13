@@ -1,4 +1,3 @@
-import { availableBuildings } from "../buildings.ts/aviable-buildings";
 import {
 	BuildingName,
 	BuildingBlueprint,
@@ -49,14 +48,7 @@ export function createGameStates(): GameStates {
 		selectedBuilding: null,
 		pointingDirection: "upLeft",
 		gameLog: [{ message: "Welcome to the game!", logType: "info" }],
-		buildQueue: [
-			{
-				building: Object.values(availableBuildings).find(
-					(building) => building.name === "coalMine",
-				)!,
-				cellIndex: [0, 0],
-			},
-		],
+		buildQueue: [],
 		keyStates: {
 			shift: false,
 			ctrl: false,
