@@ -1,11 +1,12 @@
 import { availableResources } from "../game-information/resources";
 import { Building } from "./buildings";
+import { TheBuilding } from "./the-building";
 
 interface AvailableBuildings {
 	[key: string]: Building;
 }
 export const availableBuildings: AvailableBuildings = {
-	coalMine: {
+	coalMine: new TheBuilding({
 		name: "coalMine",
 		namePretty: "Coal Mine",
 		mapIcon: "C",
@@ -15,8 +16,8 @@ export const availableBuildings: AvailableBuildings = {
 		pointingBuilding: false,
 		buildingFunction: "output",
 		buildingResourceMine: availableResources.coal,
-	},
-	ironMine: {
+	}),
+	ironMine: new TheBuilding({
 		name: "ironMine",
 		namePretty: "Iron Mine",
 		mapIcon: "Fe",
@@ -26,8 +27,8 @@ export const availableBuildings: AvailableBuildings = {
 		pointingBuilding: false,
 		buildingFunction: "output",
 		buildingResourceMine: availableResources.iron,
-	},
-	copperMine: {
+	}),
+	copperMine: new TheBuilding({
 		name: "copperMine",
 		namePretty: "Copper Mine",
 		mapIcon: "Cu",
@@ -37,8 +38,8 @@ export const availableBuildings: AvailableBuildings = {
 		pointingBuilding: false,
 		buildingFunction: "output",
 		buildingResourceMine: availableResources.copper,
-	},
-	rubberPlant: {
+	}),
+	rubberPlant: new TheBuilding({
 		name: "rubberPlant",
 		namePretty: "Rubber Plant",
 		mapIcon: "R",
@@ -48,8 +49,8 @@ export const availableBuildings: AvailableBuildings = {
 		pointingBuilding: false,
 		buildingFunction: "output",
 		buildingResourceMine: availableResources.rubber,
-	},
-	steelMill: {
+	}),
+	steelMill: new TheBuilding({
 		name: "steelMill",
 		namePretty: "Steel Mill",
 		mapIcon: "St",
@@ -61,8 +62,8 @@ export const availableBuildings: AvailableBuildings = {
 		outputs: [{ resource: availableResources.steel, amount: 6 }],
 		pointingBuilding: false,
 		buildingFunction: "inputOutput",
-	},
-	electronicsFactory: {
+	}),
+	electronicsFactory: new TheBuilding({
 		name: "electronicsFactory",
 		namePretty: "Electronics Factory",
 		mapIcon: "E",
@@ -74,8 +75,8 @@ export const availableBuildings: AvailableBuildings = {
 		outputs: [{ resource: availableResources.electronics, amount: 10 }],
 		pointingBuilding: false,
 		buildingFunction: "inputOutput",
-	},
-	machineFactory: {
+	}),
+	machineFactory: new TheBuilding({
 		name: "machineFactory",
 		namePretty: "Machine Factory",
 		mapIcon: "M",
@@ -88,8 +89,8 @@ export const availableBuildings: AvailableBuildings = {
 		outputs: [{ resource: availableResources.machine, amount: 10 }],
 		pointingBuilding: false,
 		buildingFunction: "inputOutput",
-	},
-	market: {
+	}),
+	market: new TheBuilding({
 		name: "market",
 		namePretty: "Market",
 		mapIcon: "M",
@@ -102,8 +103,8 @@ export const availableBuildings: AvailableBuildings = {
 			"Buys resources from the direction of the building. This is only way to sell the resources.",
 			"To change the direction, click R while building is selected.",
 		],
-	},
-	bulldozer: {
+	}),
+	bulldozer: new TheBuilding({
 		name: "bulldozer",
 		namePretty: "Bulldozer",
 		mapIcon: "B",
@@ -116,5 +117,5 @@ export const availableBuildings: AvailableBuildings = {
 			"If placed on another building, that building will be destroyed.",
 			"No refunds for destroyed building costs.",
 		],
-	},
+	}),
 };

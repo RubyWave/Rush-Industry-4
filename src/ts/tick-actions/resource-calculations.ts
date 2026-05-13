@@ -1,17 +1,14 @@
 import { gameStatesGlobal } from "../game-information/gameStatesStore";
 import { settings } from "../game-information/settings";
 import { board } from "../game-set-up";
-import {
-	Building,
-	getBuildingInput,
-	getBuildingOutput,
-} from "../buildings.ts/buildings";
+import { Building } from "../buildings.ts/buildings";
 // import { CellIndex, getNeighborCell } from "../board/the-board";
 import { Resources } from "../game-information/resources";
 import { CellIndex, getNeighborCell } from "../board/the-board";
+import { TheBuilding } from "../buildings.ts/the-building";
 
 function inputOutputBuilding(
-	building: Building,
+	building: TheBuilding,
 	allResources: Resources,
 ): Resources {
 	let buildingHaveInputs = true;
@@ -23,7 +20,7 @@ function inputOutputBuilding(
 		)!;
 		const index = allResources.indexOf(resource);
 
-		const outputAmount = getBuildingInput(building, input.resource);
+		const outputAmount = building.getBuildingInput(input.resource);
 		if (outputAmount === 0) return allResources;
 
 		let adjustedInput = outputAmount / settings.tickInterval; // resources are consumed per second
@@ -43,7 +40,8 @@ function inputOutputBuilding(
 		)!;
 		const index = allResources.indexOf(resource);
 
-		const outputAmount = getBuildingOutput(building, output.resource);
+		const outputAmount = building.getBuildingOutput(output.resource);
+
 		if (outputAmount === 0) return allResources;
 
 		let adjustedOutput = outputAmount / settings.tickInterval; // resources are produced per second

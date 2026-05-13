@@ -4,10 +4,10 @@
  */
 
 import {
-	Building,
 	BuildingBlueprint,
 	PointingDirection,
 } from "../buildings.ts/buildings";
+import { TheBuilding } from "../buildings.ts/the-building";
 import { Resource } from "../game-information/resources";
 import { settings } from "../game-information/settings";
 import { gameCanvas } from "../game-set-up";
@@ -23,7 +23,7 @@ export type CellIndex = readonly [column: number, row: number];
 export type BoardCell = {
 	/** Cell position `[column, row]` on the board. */
 	index: CellIndex;
-	building: Building | null;
+	building: TheBuilding | null;
 	buildingBlueprint: BuildingBlueprint | null;
 	resourceOre: Resource | null;
 };
@@ -54,6 +54,19 @@ export type Board = {
 export function getCell(b: Board, index: CellIndex): BoardCell | undefined {
 	const [col, row] = index;
 	return b.hexes[col]?.[row];
+}
+
+/**
+ * Checks if two cell indices are equal.
+ * @param index1 The first cell index.
+ * @param index2 The second cell index.
+ * @returns True if the cell indices are equal, false otherwise.
+ */
+export function isEqualCellIndex(
+	index1: CellIndex,
+	index2: CellIndex,
+): boolean {
+	return index1[0] === index2[0] && index1[1] === index2[1];
 }
 
 /** Odd-r offset -> axial. Keeps storage rectangular while using axial for geometry. */

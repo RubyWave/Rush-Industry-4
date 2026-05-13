@@ -2,10 +2,11 @@ import {
 	emitChange,
 	gameStatesGlobal,
 } from "../game-information/gameStatesStore";
-import { CellIndex, getCell, redrawBoard } from "./the-board";
+import { CellIndex, getCell, isEqualCellIndex, redrawBoard } from "./the-board";
 import { board } from "../game-set-up";
 import { availableBuildings } from "../buildings.ts/aviable-buildings";
 import { Building, BuildingBlueprint } from "../buildings.ts/buildings";
+import { TheBuilding } from "../buildings.ts/the-building";
 
 export function buildBuilding(
 	index: CellIndex,
@@ -21,23 +22,43 @@ export function buildBuilding(
 	const cell = getCell(board, index);
 	if (!cell) return;
 
-	if (building.name === "bulldozer" && cell.building) {
-		gameStatesGlobal.gameLog = [
-			...gameStatesGlobal.gameLog,
-			{
-				message: `Bulldozed ${cell.building.namePretty} in cell ${index}`,
-				logType: "warning",
-			},
-		];
-		cell.building = null;
+	if (building.name === "bulldozer") {
+		if (cell.building) {
+			gameStatesGlobal.gameLog = [
+				...gameStatesGlobal.gameLog,
+				{
+					message: `Bulldozed ${cell.building.namePretty} in cell ${index}`,
+					logType: "warning",
+				},
+			];
+		} else if (cell.buildingBlueprint) {
+			cell.buildingBlueprint = null;
+			gameStatesGlobal.buildQueue = gameStatesGlobal.buildQueue.filter(
+				(blueprint) => {
+					return !isEqualCellIndex(blueprint.cellIndex, index);
+				},
+			);
+			gameStatesGlobal.gameLog = [
+				...gameStatesGlobal.gameLog,
+				{
+					message: `Removed blueprint from cell ${index}`,
+					logType: "warning",
+				},
+			];
+		}
+
+		if (cell.building instanceof TheBuilding) {
+			cell.building = null;
+		}
 		emitChange();
 		return;
 	}
-
+	if (cell.building) return;
 	if (
 		gameStatesGlobal.cash < building.baseCost ||
 		(gameStatesGlobal.keyStates.shift && !blueprintBuilding)
 	) {
+		if (cell.buildingBlueprint) return;
 		if (gameStatesGlobal.cash < building.baseCost) {
 			gameStatesGlobal.gameLog = [
 				...gameStatesGlobal.gameLog,
@@ -66,7 +87,7 @@ export function buildBuilding(
 		emitChange();
 		return;
 	}
-	if (cell.building) return;
+
 	gameStatesGlobal.cash -= building.baseCost;
 
 	if (
@@ -87,7 +108,7 @@ export function buildBuilding(
 	};
 
 	// this convoluted  thingy is to not change pointing direction of all buildings, just this bulid this very moment
-	cell.building = newBuilding;
+	cell.building = new TheBuilding(newBuilding);
 	gameStatesGlobal.gameLog = [
 		...gameStatesGlobal.gameLog,
 		{
