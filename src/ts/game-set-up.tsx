@@ -36,7 +36,7 @@ export const initiateGameSetup = () => {
 	gameStatesGlobal.gameLog = [
 		...gameStatesGlobal.gameLog,
 		{
-			message: `Creating the game`,
+			message: `Creating the game with seed ${gameStatesGlobal.randomSeed}`,
 			logType: "info",
 		},
 	];
