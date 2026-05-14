@@ -17,7 +17,7 @@ export interface GameStates {
 	/** True if game Ticks are running */
 	runState: "pregame" | "map-viewing" | "game-running" | "post-game";
 	/** Random seed for the game */
-	randomSeed: number;
+	randomSeed: string;
 	/** Resources storage */
 	resourcesStorage: ResourcesStorage;
 	/** Cash in the bank */
@@ -38,7 +38,7 @@ export function createGameStates(): GameStates {
 	return {
 		tickCounter: 0,
 		runState: "pregame",
-		randomSeed: Math.floor(Math.random() * 1000000),
+		randomSeed: Math.floor(Math.random() * 1000000).toString(),
 		resourcesStorage: {
 			resources: Object.values(availableResources).map(
 				(resource: Resource) => ({

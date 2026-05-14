@@ -18,12 +18,12 @@ export const PreGameView = () => {
 					type="text"
 					value={setSeed}
 					onChange={(e) => {
-						setSetSeed(Number(e.target.value));
+						setSetSeed(e.target.value);
 					}}
 				/>
 				<button
 					onClick={() => {
-						gameStatesGlobal.randomSeed = Number(setSeed);
+						gameStatesGlobal.randomSeed = setSeed;
 						initiateGameSetup();
 					}}
 				>
