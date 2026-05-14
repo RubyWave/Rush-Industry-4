@@ -15,7 +15,9 @@ export interface GameStates {
 	/** Ticks elapsed since the game started. */
 	tickCounter: number;
 	/** True if game Ticks are running */
-	runState: boolean;
+	runState: "pregame" | "map-viewing" | "game-running" | "post-game";
+	/** Random seed for the game */
+	randomSeed: number;
 	/** Resources storage */
 	resourcesStorage: ResourcesStorage;
 	/** Cash in the bank */
@@ -35,7 +37,8 @@ export interface GameStates {
 export function createGameStates(): GameStates {
 	return {
 		tickCounter: 0,
-		runState: false,
+		runState: "pregame",
+		randomSeed: Math.floor(Math.random() * 1000000),
 		resourcesStorage: {
 			resources: Object.values(availableResources).map(
 				(resource: Resource) => ({

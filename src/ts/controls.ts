@@ -4,6 +4,7 @@ import {
 	emitChange,
 	gameStatesGlobal,
 } from "./game-information/gameStatesStore";
+import { initiateGameSetup } from "./game-set-up";
 
 export interface KeyStates {
 	/** True if shift key is pressed */
@@ -36,24 +37,18 @@ export function bindBasicKeyboardControls(): () => void {
 		switch (event.code) {
 			case "Space":
 				event.preventDefault();
-				if (gameStatesGlobal.runState) {
+				if (gameStatesGlobal.runState === "pregame") {
+					initiateGameSetup();
+				} else if (gameStatesGlobal.runState === "map-viewing") {
+					gameStatesGlobal.runState = "game-running";
 					gameStatesGlobal.gameLog = [
 						...gameStatesGlobal.gameLog,
 						{
-							message: `Can't pause game while it's running`,
-							logType: "warning",
+							message: `Game started`,
+							logType: "info",
 						},
 					];
-					break;
 				}
-				gameStatesGlobal.runState = !gameStatesGlobal.runState;
-				gameStatesGlobal.gameLog = [
-					...gameStatesGlobal.gameLog,
-					{
-						message: `Game ${gameStatesGlobal.runState ? "started" : "paused"}`,
-						logType: "info",
-					},
-				];
 
 				break;
 			case "KeyR":

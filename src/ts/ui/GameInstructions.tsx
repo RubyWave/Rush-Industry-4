@@ -4,7 +4,6 @@ import { settings } from "../game-information/settings";
 export const GameInstructions = () => {
 	return (
 		<div className="game-instructions">
-			<h1>Rush Industry 4</h1>
 			<p>
 				The point of the game is to make as much money as possible in
 				the given time ({settings.gameTime} seconds). When the game

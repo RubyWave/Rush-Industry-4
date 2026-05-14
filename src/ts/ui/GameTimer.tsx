@@ -11,6 +11,21 @@ export const GameTimer = () => {
 		subscribe,
 		() => getSnapshot().tickCounter,
 	);
+	let gameStateString = "";
+	switch (gameRunning) {
+		case "pregame":
+			gameStateString = "Pre-game";
+			break;
+		case "map-viewing":
+			gameStateString = "Map viewing";
+			break;
+		case "game-running":
+			gameStateString = "Game running";
+			break;
+		case "post-game":
+			gameStateString = "Post-game";
+			break;
+	}
 
 	return (
 		<div className="game-timer">
@@ -19,7 +34,7 @@ export const GameTimer = () => {
 				{settings.gameTime -
 					Math.floor(gameTimer / settings.tickInterval)}
 			</h3>
-			<h3>Game running: {gameRunning ? "Yes" : "No"}</h3>
+			<h3>Game state:{" " + gameStateString}</h3>
 		</div>
 	);
 };

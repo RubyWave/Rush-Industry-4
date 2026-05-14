@@ -29,7 +29,7 @@ function gameOver() {
 		},
 	];
 	gameStatesGlobal.cash += leftoversSellCash;
-	gameStatesGlobal.runState = false;
+	gameStatesGlobal.runState = "post-game";
 	gameStatesGlobal.gameLog = [
 		...gameStatesGlobal.gameLog,
 		{
@@ -49,7 +49,8 @@ function gameOver() {
  */
 export function gameLoop(
 	onTick: GameLoopTick,
-	shouldRun: GameLoopShouldRun = () => true,
+	shouldRun: GameLoopShouldRun = () =>
+		gameStatesGlobal.runState === "game-running",
 ): () => void {
 	const id = window.setInterval(() => {
 		if (!shouldRun()) {

@@ -8,11 +8,13 @@ import {
 	PointingDirection,
 } from "../buildings.ts/buildings";
 import { TheBuilding } from "../buildings.ts/the-building";
+import { gameStatesGlobal } from "../game-information/gameStatesStore";
 import { Resource } from "../game-information/resources";
 import { settings } from "../game-information/settings";
 import { gameCanvas } from "../game-set-up";
 import { buildBuilding } from "./build-building";
 import { renderBoard } from "./render-board";
+import seedrandom from "seedrandom";
 
 /**
  * @brief Board address as a tuple: `[column, row]` matches `hexes[col][row]`.
@@ -244,6 +246,7 @@ function createBoardCells(): BoardCell[][] {
 
 function placeResourceOres(board: Board): Board {
 	const resourceOres = settings.board.resourcesOres;
+	const myrng = seedrandom(gameStatesGlobal.randomSeed.toString());
 	resourceOres.forEach((resourceOre) => {
 		let leftCellsAmmount = board.cols * board.rows;
 		board.hexes.forEach((r) => {
@@ -267,7 +270,7 @@ function placeResourceOres(board: Board): Board {
 				// TODO: see why ores likes to spawn so much at the left side of the board.
 
 				// spawn chance is approaching 1 to force spawning.
-				if (Math.random() < resourceSpawnChance) {
+				if (myrng() < resourceSpawnChance) {
 					cell.resourceOre = resourceOre.resource;
 					resourceOre.tiles--; // to limit how much of the resource will spawn
 				}

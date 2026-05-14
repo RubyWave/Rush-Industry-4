@@ -1,0 +1,21 @@
+.pregame-ui {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	.pregame-ui-content {
+		background: white;
+		max-width: 50rem;
+		padding: 2rem;
+		box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+		&__heading {
+			margin-top: 0;
+		}
+		&__random-seed {
+			display: flex;
+			margin-top: 1rem;
+			gap: 0.25rem;
+		}
+	}
+}

@@ -1,4 +1,4 @@
-import initiateGameSetup from "./game-set-up";
+import { preGameSetup } from "./game-set-up";
 import { gameLoop } from "./game-loop";
 import {
 	emitChange,
@@ -6,12 +6,12 @@ import {
 } from "./game-information/gameStatesStore";
 
 document.addEventListener("DOMContentLoaded", () => {
-	initiateGameSetup();
+	preGameSetup();
 	gameLoop(
 		() => {
 			gameStatesGlobal.tickCounter++;
 			emitChange();
 		},
-		() => gameStatesGlobal.runState,
+		() => gameStatesGlobal.runState === "game-running",
 	);
 });
