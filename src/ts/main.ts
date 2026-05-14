@@ -7,11 +7,8 @@ import {
 
 document.addEventListener("DOMContentLoaded", () => {
 	preGameSetup();
-	gameLoop(
-		() => {
-			gameStatesGlobal.tickCounter++;
-			emitChange();
-		},
-		() => gameStatesGlobal.runState === "game-running",
-	);
+	gameLoop(() => {
+		gameStatesGlobal.tickCounter++;
+		emitChange();
+	});
 });

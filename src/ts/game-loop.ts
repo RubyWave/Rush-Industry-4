@@ -11,8 +11,6 @@ const TICK_MS = 1000 / settings.tickInterval;
 
 export type GameLoopTick = (deltaMs: number) => void;
 
-export type GameLoopShouldRun = () => boolean;
-
 function gameOver() {
 	let leftoversSellCash = 0;
 	gameStatesGlobal.resourcesStorage.resources.forEach((resource) => {
@@ -47,22 +45,33 @@ function gameOver() {
  * When `shouldRun` is provided and returns false, ticks are skipped (pause) without stopping the interval.
  * Uses `setInterval` so the timer keeps firing while the tab is in the background (the browser may still throttle it).
  */
-export function gameLoop(
-	onTick: GameLoopTick,
-	shouldRun: GameLoopShouldRun = () =>
-		gameStatesGlobal.runState === "game-running",
-): () => void {
+export function gameLoop(onTick: GameLoopTick): () => void {
 	const id = window.setInterval(() => {
-		if (!shouldRun()) {
-			return;
-		}
-		calculateResourceProduction();
-		buildFromQueue();
-		if (
-			gameStatesGlobal.tickCounter >=
-			settings.gameTime * settings.tickInterval
-		) {
-			gameOver();
+		if (gameStatesGlobal.runState === "pregame") return;
+		else if (gameStatesGlobal.runState === "map-viewing") {
+			if (
+				gameStatesGlobal.tickCounter >=
+				settings.mapPreviewTime * settings.tickInterval
+			) {
+				gameStatesGlobal.runState = "game-running";
+				gameStatesGlobal.gameLog = [
+					...gameStatesGlobal.gameLog,
+					{
+						message: `Map preview ended, game starting`,
+						logType: "info",
+					},
+				];
+			}
+		} else if (gameStatesGlobal.runState === "game-running") {
+			calculateResourceProduction();
+			buildFromQueue();
+			if (
+				gameStatesGlobal.tickCounter >=
+				(settings.gameTime + settings.mapPreviewTime) *
+					settings.tickInterval
+			) {
+				gameOver();
+			}
 		}
 
 		emitChange();

@@ -27,4 +27,6 @@ export const settings = {
 	startingCash: 1000,
 	tickInterval: 5, // 5 ticks per second
 	gameTime: 60, // time for the game in seconds
+	mapPreviewTime: 30, // time for the map preview in seconds
+	skipPreGame: false, // if true, the game will start immediately
 };

@@ -8,6 +8,7 @@ import {
 	emitChange,
 	gameStatesGlobal,
 } from "./game-information/gameStatesStore";
+import { settings } from "./game-information/settings";
 import { renderUI } from "./the-ui";
 export let gameCanvas: HTMLCanvasElement;
 export let uiLayer: HTMLDivElement;
@@ -21,13 +22,16 @@ export const preGameSetup = () => {
 	document.body.appendChild(gameCanvas);
 	document.body.appendChild(uiLayer);
 
+	bindBasicKeyboardControls();
 	renderUI();
+	if (settings.skipPreGame) {
+		initiateGameSetup();
+	}
 };
 
 export const initiateGameSetup = () => {
 	board = initiateBoard();
 	bindBoardClick(board, gameCanvas);
-	bindBasicKeyboardControls();
 	gameStatesGlobal.runState = "map-viewing";
 	gameStatesGlobal.gameLog = [
 		...gameStatesGlobal.gameLog,

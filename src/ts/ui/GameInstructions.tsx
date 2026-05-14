@@ -6,9 +6,10 @@ export const GameInstructions = () => {
 		<div className="game-instructions">
 			<p>
 				The point of the game is to make as much money as possible in
-				the given time ({settings.gameTime} seconds). When the game
-				starts (by pressing the spacebar), you can&apos;t stop it, and
-				it will continue until the time is up.
+				the given time ({settings.gameTime} seconds). First, you will
+				have a map preview for {settings.mapPreviewTime} seconds. After
+				that, the game starts, you can&apos;t stop it, and it will
+				continue until the time is up.
 			</p>
 			<p>
 				There are {Object.values(availableBuildings).length} buildings
@@ -24,6 +25,14 @@ export const GameInstructions = () => {
 				{settings.board.rows} rows. On some hexes, some resources are
 				spawned. While it is not required to build mines on specific
 				resource, doing so, increases the throughput of the building.
+			</p>
+			<p>
+				Building can be queued to be built instead of building
+				instantly. To do so, either press Shift to toggle blueprint
+				mode, or try building when not enough cash is available.
+				Building will be queued as a last in the queue. Every tick, the
+				first building from the queue will be built, if enough cash is
+				available.
 			</p>
 			<p>
 				To earn money, you need to sell any resource using Market
