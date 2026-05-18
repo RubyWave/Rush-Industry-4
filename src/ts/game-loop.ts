@@ -4,6 +4,7 @@ import {
 	gameStatesGlobal,
 } from "./game-information/gameStatesStore";
 import { settings } from "./game-information/settings";
+import { theBoard } from "./game-set-up";
 import { calculateResourceProduction } from "./tick-actions/resource-calculations";
 
 /** Target interval between ticks (~60 Hz). */
@@ -63,8 +64,22 @@ export function gameLoop(onTick: GameLoopTick): () => void {
 				];
 			}
 		} else if (gameStatesGlobal.runState === "game-running") {
-			calculateResourceProduction();
+			let newAllResources = gameStatesGlobal.resourcesStorage.resources;
+			let newCash = gameStatesGlobal.cash;
+			[newAllResources, newCash] = calculateResourceProduction(
+				newAllResources,
+				newCash,
+				1,
+				theBoard,
+				false,
+			);
+			gameStatesGlobal.resourcesStorage = {
+				...gameStatesGlobal.resourcesStorage,
+				resources: [...newAllResources],
+			};
+			gameStatesGlobal.cash = newCash;
 			buildFromQueue();
+
 			if (
 				gameStatesGlobal.tickCounter >=
 				(settings.gameTime + settings.mapPreviewTime) *

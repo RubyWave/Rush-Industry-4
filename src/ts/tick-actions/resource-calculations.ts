@@ -1,16 +1,16 @@
-import { gameStatesGlobal } from "../game-information/gameStatesStore";
 import { settings } from "../game-information/settings";
-import { board } from "../game-set-up";
 import { Building } from "../buildings.ts/buildings";
 // import { CellIndex, getNeighborCell } from "../board/the-board";
 import { Resources } from "../game-information/resources";
-import { CellIndex, getNeighborCell } from "../board/the-board";
+import { Board, CellIndex, getNeighborCell } from "../board/the-board";
 import { TheBuilding } from "../buildings.ts/the-building";
 
 function inputOutputBuilding(
 	building: TheBuilding,
 	allResources: Resources,
-): Resources {
+	cash: number,
+	predition: boolean = false,
+): [Resources, number] {
 	let buildingHaveInputs = true;
 
 	building.inputs.forEach((input) => {
@@ -26,14 +26,14 @@ function inputOutputBuilding(
 		let adjustedInput = outputAmount / settings.tickInterval; // resources are consumed per second
 		adjustedInput = Number(adjustedInput.toFixed(2));
 
-		if (resource.amount < adjustedInput) {
+		if (resource.amount < adjustedInput && !predition) {
 			buildingHaveInputs = false;
 		} else {
 			resource.amount -= adjustedInput;
 			allResources[index] = resource;
 		}
 	});
-	if (!buildingHaveInputs) return allResources; // for now, building must have all inputs to work
+	if (!buildingHaveInputs) return [allResources, cash]; // for now, building must have all inputs to work
 	building.outputs.forEach((output) => {
 		const resource = allResources.find(
 			(resource) => resource.resource.name === output.resource.name,
@@ -50,22 +50,24 @@ function inputOutputBuilding(
 		resource.amount += adjustedOutput;
 		allResources[index] = resource;
 	});
-	return allResources;
+	return [allResources, cash];
 }
 
 function buysFromDirectionBuilding(
 	building: Building,
 	allResources: Resources,
 	cellIndex: CellIndex,
-): Resources {
+	cash: number,
+	boardToCalculateFor: Board,
+): [Resources, number] {
 	const neighborCell = getNeighborCell(
-		board,
+		boardToCalculateFor,
 		cellIndex,
 		building.pointingDirection!,
 	);
-	if (!neighborCell) return allResources;
+	if (!neighborCell) return [allResources, cash];
 	const neighborBuilding = neighborCell.building;
-	if (!neighborBuilding) return allResources;
+	if (!neighborBuilding) return [allResources, cash];
 
 	neighborBuilding.outputs.forEach((output) => {
 		const resource = allResources.find(
@@ -80,42 +82,58 @@ function buysFromDirectionBuilding(
 			return false;
 		}
 
-		const cashEarned = adjustedOutput * output.resource.basePrice;
-		gameStatesGlobal.cash += cashEarned;
-		gameStatesGlobal.cash = Number(gameStatesGlobal.cash.toFixed(2));
+		cash = Number(
+			(cash + adjustedOutput * output.resource.basePrice).toFixed(2),
+		);
 
 		resource.amount -= adjustedOutput;
 		allResources[index] = resource;
 	});
-	return allResources;
+	return [allResources, cash];
 }
 
-export const calculateResourceProduction = () => {
-	board.hexes.forEach((row) => {
-		row.forEach((cell) => {
-			if (cell.building) {
-				let allResources = gameStatesGlobal.resourcesStorage.resources;
-				switch (cell.building.buildingFunction) {
-					case "inputOutput":
-					case "output":
-						allResources = inputOutputBuilding(
-							cell.building,
-							allResources,
-						);
-						break;
-					case "buysFromDirection":
-						allResources = buysFromDirectionBuilding(
-							cell.building,
-							allResources,
-							cell.index,
-						);
-						break;
+/**
+ * Calculate new resources after one tick.
+ * @param ticksNumber - The number of ticks to calculate.
+ * @param boardToCalculateFor - The board to calculate the resource production for. This will be used for a case of predicting the resource production for a new building
+ * @param predition - If true, it will assume all buildings are working, no matter missing inputs.
+ * @returns
+ */
+export const calculateResourceProduction = (
+	newAllResources: Resources,
+	newCash: number,
+	ticksNumber: number = 1, // TODO: check if this isn't to computationally expensive
+	boardToCalculateFor: Board,
+	predition: boolean = false,
+): [Resources, number] => {
+	for (let i = 0; i < ticksNumber; i++) {
+		boardToCalculateFor.hexes.forEach((row) => {
+			row.forEach((cell) => {
+				if (cell.building) {
+					switch (cell.building.buildingFunction) {
+						case "inputOutput":
+						case "output":
+							[newAllResources, newCash] = inputOutputBuilding(
+								cell.building,
+								newAllResources,
+								newCash,
+								predition,
+							);
+							break;
+						case "buysFromDirection":
+							[newAllResources, newCash] =
+								buysFromDirectionBuilding(
+									cell.building,
+									newAllResources,
+									cell.index,
+									newCash,
+									boardToCalculateFor,
+								);
+							break;
+					}
 				}
-				gameStatesGlobal.resourcesStorage = {
-					...gameStatesGlobal.resourcesStorage,
-					resources: [...allResources],
-				};
-			}
+			});
 		});
-	});
+	}
+	return [newAllResources, newCash];
 };

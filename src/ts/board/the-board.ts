@@ -59,6 +59,19 @@ export function getCell(b: Board, index: CellIndex): BoardCell | undefined {
 }
 
 /**
+ * @brief Returns the board with the cell  set to the given cell at a tuple index `[column, row]`.
+ * @param b Board instance.
+ * @param index Tuple `[col, row]`.
+ * @param cell The `BoardCell` to set.
+ * @returns The board with the cell set to the given cell.
+ */
+export function setCell(b: Board, index: CellIndex, cell: BoardCell): Board {
+	const [col, row] = index;
+	b.hexes[col][row] = cell;
+	return b;
+}
+
+/**
  * Checks if two cell indices are equal.
  * @param index1 The first cell index.
  * @param index2 The second cell index.
@@ -383,7 +396,7 @@ export function bindBoardClick(
 		if (!index) {
 			return;
 		}
-		buildBuilding(index);
+		buildBuilding(board, index);
 		lastClickedCell = index;
 		renderBoard(board, canvas);
 	};

@@ -12,7 +12,7 @@ import { settings } from "./game-information/settings";
 import { renderUI } from "./the-ui";
 export let gameCanvas: HTMLCanvasElement;
 export let uiLayer: HTMLDivElement;
-export let board: Board;
+export let theBoard: Board;
 
 export const preGameSetup = () => {
 	gameCanvas = document.createElement("canvas");
@@ -30,8 +30,8 @@ export const preGameSetup = () => {
 };
 
 export const initiateGameSetup = () => {
-	board = initiateBoard();
-	bindBoardClick(board, gameCanvas);
+	theBoard = initiateBoard();
+	bindBoardClick(theBoard, gameCanvas);
 	gameStatesGlobal.runState = "map-viewing";
 	gameStatesGlobal.gameLog = [
 		...gameStatesGlobal.gameLog,

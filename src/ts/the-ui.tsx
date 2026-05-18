@@ -4,7 +4,6 @@ import { uiLayer } from "./game-set-up";
 import { BuildingsBar } from "./ui/BuildingsBar";
 import { BuildingQueue } from "./ui/BuldingQueue";
 import { BuildingStats } from "./ui/BuldingStats";
-import { CashDisplay } from "./ui/CashDisplay";
 import { GameLog } from "./ui/GameLog";
 import { GameTimer } from "./ui/GameTimer";
 import { ResourcesStorage } from "./ui/ResourcesStorage";
@@ -34,7 +33,6 @@ function RootUi() {
 			<div className="right-ui-container">
 				<GameTimer />
 				<ResourcesStorage />
-				<CashDisplay />
 			</div>
 			<div className="left-bottom-ui-container"></div>
 			<div className="bottom-ui-container">

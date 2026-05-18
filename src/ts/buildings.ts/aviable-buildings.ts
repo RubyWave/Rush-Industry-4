@@ -93,7 +93,7 @@ export const availableBuildings: AvailableBuildings = {
 	market: new TheBuilding({
 		name: "market",
 		namePretty: "Market",
-		mapIcon: "M",
+		mapIcon: "M€",
 		baseCost: 100,
 		inputs: [],
 		outputs: [],

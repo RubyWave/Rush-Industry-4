@@ -2,16 +2,33 @@ import {
 	emitChange,
 	gameStatesGlobal,
 } from "../game-information/gameStatesStore";
-import { CellIndex, getCell, isEqualCellIndex, redrawBoard } from "./the-board";
-import { board } from "../game-set-up";
+import {
+	Board,
+	CellIndex,
+	getCell,
+	isEqualCellIndex,
+	redrawBoard,
+} from "./the-board";
 import { availableBuildings } from "../buildings.ts/aviable-buildings";
 import { Building, BuildingBlueprint } from "../buildings.ts/buildings";
 import { TheBuilding } from "../buildings.ts/the-building";
+import { theBoard } from "../game-set-up";
 
+/**
+ *
+ * @param board
+ * @param index
+ * @param building
+ * @param blueprintBuilding
+ * @param prediction
+ * @returns
+ */
 export function buildBuilding(
+	board: Board,
 	index: CellIndex,
 	building?: Building,
-	blueprintBuilding = false,
+	blueprintBuilding: boolean = false,
+	prediction: boolean = false,
 ) {
 	if (!building) {
 		building = Object.values(availableBuildings).find(
@@ -22,7 +39,7 @@ export function buildBuilding(
 	const cell = getCell(board, index);
 	if (!cell) return;
 
-	if (building.name === "bulldozer") {
+	if (building.name === "bulldozer" && !prediction) {
 		if (cell.building) {
 			gameStatesGlobal.gameLog = [
 				...gameStatesGlobal.gameLog,
@@ -55,7 +72,7 @@ export function buildBuilding(
 	}
 	if (cell.building) return;
 	if (
-		gameStatesGlobal.cash < building.baseCost ||
+		(gameStatesGlobal.cash < building.baseCost && !prediction) ||
 		(gameStatesGlobal.keyStates.shift && !blueprintBuilding)
 	) {
 		if (cell.buildingBlueprint) return;
@@ -88,7 +105,9 @@ export function buildBuilding(
 		return;
 	}
 
-	gameStatesGlobal.cash -= building.baseCost;
+	if (!prediction) {
+		gameStatesGlobal.cash -= building.baseCost;
+	}
 
 	if (
 		building.buildingResourceMine &&
@@ -109,13 +128,15 @@ export function buildBuilding(
 
 	// this convoluted  thingy is to not change pointing direction of all buildings, just this bulid this very moment
 	cell.building = new TheBuilding(newBuilding);
-	gameStatesGlobal.gameLog = [
-		...gameStatesGlobal.gameLog,
-		{
-			message: `Built ${building.namePretty} in cell ${index}`,
-			logType: "success",
-		},
-	];
+	if (!prediction) {
+		gameStatesGlobal.gameLog = [
+			...gameStatesGlobal.gameLog,
+			{
+				message: `Built ${building.namePretty} in cell ${index}`,
+				logType: "success",
+			},
+		];
+	}
 	emitChange();
 	redrawBoard();
 }
@@ -125,6 +146,7 @@ export function buildFromQueue() {
 	if (!buildingBlueprint) return;
 	if (gameStatesGlobal.cash < buildingBlueprint.building.baseCost) return;
 	buildBuilding(
+		theBoard,
 		buildingBlueprint.cellIndex,
 		buildingBlueprint.building,
 		true,

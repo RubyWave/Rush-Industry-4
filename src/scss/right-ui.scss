@@ -14,10 +14,11 @@
 	li {
 		list-style: none;
 		font-size: 1.5rem;
-		display: flex;
+		display: grid;
+		grid-template-columns: 1fr 1fr 1fr 1fr;
 		gap: 0.5rem;
 		justify-content: flex-start;
-        align-items: center;
+		align-items: center;
 	}
 	.resource {
 		margin-bottom: 0.5rem;
@@ -27,10 +28,7 @@
 			background: color-mix(in srgb, var(--resource-color) 50%, white);
 			padding: 0.25rem;
 			border: 2px solid var(--resource-color);
-            position: relative;
-		}
-		&__amount-value {
-			margin-left: auto;
+			position: relative;
 		}
 		&__price {
 			color: gold;
@@ -40,6 +38,6 @@
 	}
 }
 .cash-display {
-    font-size: 2rem;
+	font-size: 2rem;
 	color: gold;
 }
