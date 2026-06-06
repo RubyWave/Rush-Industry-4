@@ -99,7 +99,7 @@ function axialToOffsetOddR(q: number, r: number): { col: number; row: number } {
 }
 
 /**
- * Axial step to the hex neighbor in `dir` (same convention as `pointingDirectionUnit`).
+ * Axial step to the hex neighbour in `dir` (same convention as `pointingDirectionUnit`).
  */
 function pointingDirectionToAxialDelta(dir: Exclude<PointingDirection, null>): {
 	dq: number;
@@ -122,9 +122,9 @@ function pointingDirectionToAxialDelta(dir: Exclude<PointingDirection, null>): {
 }
 
 /**
- * Neighbor of `index` in direction `dir`, or `null` if `dir` is null or outside the board.
+ * Neighbour of `index` in direction `dir`, or `null` if `dir` is null or outside the board.
  */
-export function getNeighborCellIndex(
+export function getNeighbourCellIndex(
 	board: Board,
 	index: CellIndex,
 	dir: PointingDirection,
@@ -143,14 +143,14 @@ export function getNeighborCellIndex(
 }
 
 /**
- * Neighbor `BoardCell` in direction `dir`, or `undefined` if off-board or `dir` is null.
+ * Neighbour `BoardCell` in direction `dir`, or `undefined` if off-board or `dir` is null.
  */
-export function getNeighborCell(
+export function getNeighbourCell(
 	board: Board,
 	index: CellIndex,
 	dir: PointingDirection,
 ): BoardCell | undefined {
-	const next = getNeighborCellIndex(board, index, dir);
+	const next = getNeighbourCellIndex(board, index, dir);
 	if (!next) {
 		return undefined;
 	}
@@ -158,9 +158,9 @@ export function getNeighborCell(
 }
 
 /**
- * Returns all neighboring cells around a given cell (up to 6, fewer on edges).
+ * Returns all neighbouring cells around a given cell (up to 6, fewer on edges).
  */
-export function getAllNeighborCells(
+export function getAllNeighbourCells(
 	board: Board,
 	index: CellIndex,
 ): BoardCell[] {
@@ -173,14 +173,14 @@ export function getAllNeighborCells(
 		"downLeft",
 	];
 
-	const neighbors: BoardCell[] = [];
+	const neighbours: BoardCell[] = [];
 	for (const dir of dirs) {
-		const n = getNeighborCell(board, index, dir);
+		const n = getNeighbourCell(board, index, dir);
 		if (n) {
-			neighbors.push(n);
+			neighbours.push(n);
 		}
 	}
-	return neighbors;
+	return neighbours;
 }
 
 /**
@@ -273,7 +273,7 @@ function placeResourceOres(board: Board): Board {
 						(resourceOre.tiles > 0 ? resourceOre.tiles : 0));
 
 				// tries to put ores in patches
-				const orePatch = getAllNeighborCells(board, cell.index).find(
+				const orePatch = getAllNeighbourCells(board, cell.index).find(
 					(c) => c.resourceOre === resourceOre.resource,
 				)
 					? true

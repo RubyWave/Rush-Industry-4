@@ -45,7 +45,7 @@ function mixWithWhite(hex: string, tint: number): string {
 }
 
 /**
- * Outward unit vector for each hex-neighbor direction (canvas coords, +y down),
+ * Outward unit vector for each hex-neighbour direction (canvas coords, +y down),
  * consistent with `axialToPixel` / odd-r layout.
  */
 function pointingDirectionUnit(
@@ -118,7 +118,7 @@ function drawPointingDirectionMarker(
 }
 
 /**
- * Arrow along `dir`: default shaft from center outward; when `reverse`, shaft from edge inward (market “pulls” from neighbor).
+ * Arrow along `dir`: default shaft from center outward; when `reverse`, shaft from edge inward (market “pulls” from neighbour).
  */
 function drawBuildingDirectionArrow(
 	ctx: CanvasRenderingContext2D,
@@ -335,6 +335,18 @@ export function renderBoard(board: Board, canvas: HTMLCanvasElement) {
 			drawHexPath(ctx, cx, cy, board.hexSize);
 			ctx.fill();
 			ctx.stroke();
+
+			ctx.save();
+			ctx.fillStyle = "rgba(42, 63, 85, 0.5)";
+			ctx.textAlign = "center";
+			ctx.textBaseline = "bottom";
+			ctx.font = `500 ${Math.max(7, Math.floor(board.hexSize * 0.18))}px system-ui`;
+			ctx.fillText(
+				`${cellCol},${cellRow}`,
+				cx,
+				cy + board.hexSize * 0.72,
+			);
+			ctx.restore();
 
 			if (cell.building) {
 				const dir = cell.building.pointingDirection;
