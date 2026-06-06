@@ -1,8 +1,10 @@
-import { Board, CellIndex } from "../board/the-board";
+import { Board, BoardCell, CellIndex } from "../board/the-board";
 import { Resource } from "../game-information/resources";
+import { settings } from "../game-information/settings";
 import { ActionType, buildDestroyActions } from "./building-effects";
 import {
 	Building,
+	BuildingEffect,
 	BuildingFunction,
 	BuildingName,
 	BuildingThroughput,
@@ -24,6 +26,8 @@ export class TheBuilding implements Building {
 	public throughputModifiers?: BuildingThroughput | undefined;
 	public cellIndex?: CellIndex;
 	public staticEffectActions?: ActionType[];
+	public emittedEffects?: BuildingEffect[];
+	public receivedEffects?: BuildingEffect[];
 	constructor(building: Building) {
 		this.name = building.name;
 		this.namePretty = building.namePretty;
@@ -39,6 +43,8 @@ export class TheBuilding implements Building {
 		this.throughputModifiers = building.throughputModifiers;
 		this.cellIndex = building.cellIndex ?? undefined;
 		this.staticEffectActions = building.staticEffectActions ?? [];
+		this.emittedEffects = building.emittedEffects ?? [];
+		this.receivedEffects = building.receivedEffects ?? [];
 	}
 
 	/**
@@ -74,13 +80,19 @@ export class TheBuilding implements Building {
 				(output) => output.resource.name === resource.name,
 			)?.amount ?? 0;
 		if (amount === 0) return 0;
-		if (!this.throughputModifiers) return amount;
-		this.throughputModifiers?.forEach((modifier) => {
-			if (modifier.type === "addative") {
-				amount += modifier.modifier;
-			} else {
-				amount *= modifier.modifier;
-			}
+		if (!this.receivedEffects) return Number(amount.toFixed(2));
+
+		this.receivedEffects.forEach((effect) => {
+			if (effect.effectKind !== "BuildingThroughput") return;
+			let wholeModifier = 1;
+			effect.theEffect.forEach((modifier) => {
+				if (modifier.type === "addative") {
+					wholeModifier += modifier.modifier;
+				} else {
+					wholeModifier *= modifier.modifier;
+				}
+			});
+			amount *= wholeModifier;
 		});
 		return Number(amount.toFixed(2));
 	}
@@ -88,7 +100,26 @@ export class TheBuilding implements Building {
 	/**
 	 * Function to be called when the building is built
 	 */
-	public onBuild(board: Board): void {
+	public onBuild(board: Board, cell: BoardCell): void {
+		if (this.buildingResourceMine?.name === cell.resourceOre?.name) {
+			this.receivedEffects = [
+				...(this.receivedEffects ?? []),
+				{
+					source: {
+						sourceType: "cell",
+						source: cell,
+					},
+					target: this,
+					effectKind: "BuildingThroughput",
+					theEffect: [
+						{
+							modifier: settings.oreThroughputModifier,
+							type: "addative",
+						},
+					] as BuildingThroughput,
+				},
+			];
+		}
 		buildDestroyActions(this.staticEffectActions ?? [], this, board, true);
 	}
 

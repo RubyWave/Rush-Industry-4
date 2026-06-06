@@ -1,4 +1,4 @@
-import { Board, CellIndex } from "../board/the-board";
+import { Board, BoardCell, CellIndex } from "../board/the-board";
 import { Resource } from "../game-information/resources";
 import { ActionType } from "./building-effects";
 
@@ -25,6 +25,17 @@ export type BuildingThroughput = {
 	type: "addative" | "multiplicative";
 	description?: string;
 }[];
+
+export type BuildingEffect = {
+	/** for a case of ore in the hex, source can be a cell index */
+	source: {
+		sourceType: "building" | "cell";
+		source: Building | BoardCell;
+	};
+	target: Building;
+	effectKind: "BuildingThroughput";
+	theEffect: BuildingThroughput;
+};
 
 export interface BuildingBlueprint {
 	building: Building;
@@ -59,12 +70,16 @@ export interface Building {
 	cellIndex?: CellIndex;
 	/** Actions to be performed when the building is built */
 	staticEffectActions?: ActionType[];
+	/** Effects emitted by the building */
+	emittedEffects?: BuildingEffect[];
+	/** Effects received by the building */
+	receivedEffects?: BuildingEffect[];
 	/** Function to get the amount of the resource input of the specific building */
 	getBuildingInput?: (resource: Resource) => number;
 	/** Function to get the amount of the resource output of the specific building */
 	getBuildingOutput?: (resource: Resource) => number;
 	/** Function to be called when the building is built */
-	onBuild?: (board: Board) => void;
+	onBuild?: (board: Board, cell: BoardCell) => void;
 	/** Function to be called when the building is destroyed */
 	onDestroy?: (board: Board) => void;
 }

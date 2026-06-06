@@ -106,32 +106,17 @@ export function buildBuilding(
 		return;
 	}
 
-	if (!prediction) {
-		gameStatesGlobal.cash -= building.baseCost;
-		if (building.onBuild) building.onBuild(board);
-	}
-
-	if (
-		building.buildingResourceMine &&
-		cell.resourceOre?.name === building.buildingResourceMine.name
-	) {
-		building.throughputModifiers = [
-			{
-				modifier: 1.25,
-				type: "multiplicative",
-			},
-		];
-	}
-
 	// this convoluted  thingy is to not change pointing direction of all buildings, just this bulid this very moment
 	const newBuilding: Building = {
 		...building,
 		pointingDirection: gameStatesGlobal.pointingDirection,
 		cellIndex: index,
 	};
-
 	cell.building = new TheBuilding(newBuilding);
+	if (cell.building.onBuild) cell.building.onBuild(board, cell);
+
 	if (!prediction) {
+		gameStatesGlobal.cash -= cell.building.baseCost;
 		gameStatesGlobal.gameLog = [
 			...gameStatesGlobal.gameLog,
 			{

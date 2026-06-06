@@ -29,4 +29,6 @@ export const settings = {
 	gameTime: 60, // time for the game in seconds
 	mapPreviewTime: 30, // time for the map preview in seconds
 	skipPreGame: process.env.NODE_ENV === "development", // skip map preview when developing locally
+	buildingPredictionDisabled: false,
+	oreThroughputModifier: 0.25,
 };

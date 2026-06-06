@@ -119,6 +119,7 @@ function predictResourceProduction(
 	const predictedBoard = cloneBoard(theBoard);
 
 	if (currentlyHoveredOnCell && selectedBuilding) {
+		if (settings.buildingPredictionDisabled) return;
 		const predictedBuilding = new TheBuilding(
 			Object.values(availableBuildings).find(
 				(building) => building.name === selectedBuilding,

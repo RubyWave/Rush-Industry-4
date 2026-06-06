@@ -9,7 +9,7 @@ function inputOutputBuilding(
 	building: TheBuilding,
 	allResources: Resources,
 	cash: number,
-	predition: boolean = false,
+	prediction: boolean = false,
 ): [Resources, number] {
 	let buildingHaveInputs = true;
 
@@ -26,7 +26,7 @@ function inputOutputBuilding(
 		let adjustedInput = outputAmount / settings.tickInterval; // resources are consumed per second
 		adjustedInput = Number(adjustedInput.toFixed(2));
 
-		if (resource.amount < adjustedInput && !predition) {
+		if (resource.amount < adjustedInput && !prediction) {
 			buildingHaveInputs = false;
 		} else {
 			resource.amount -= adjustedInput;
@@ -96,7 +96,7 @@ function buysFromDirectionBuilding(
  * Calculate new resources after one tick.
  * @param ticksNumber - The number of ticks to calculate.
  * @param boardToCalculateFor - The board to calculate the resource production for. This will be used for a case of predicting the resource production for a new building
- * @param predition - If true, it will assume all buildings are working, no matter missing inputs.
+ * @param prediction - If true, it will assume all buildings are working, no matter missing inputs.
  * @returns
  */
 export const calculateResourceProduction = (
@@ -104,7 +104,7 @@ export const calculateResourceProduction = (
 	newCash: number,
 	ticksNumber: number = 1, // TODO: check if this isn't to computationally expensive
 	boardToCalculateFor: Board,
-	predition: boolean = false,
+	prediction: boolean = false,
 ): [Resources, number] => {
 	for (let i = 0; i < ticksNumber; i++) {
 		boardToCalculateFor.hexes.forEach((row) => {
@@ -117,7 +117,7 @@ export const calculateResourceProduction = (
 								cell.building,
 								newAllResources,
 								newCash,
-								predition,
+								prediction,
 							);
 							break;
 						case "buysFromDirection":
