@@ -440,3 +440,28 @@ export function bindBoardClick(
 		canvas.removeEventListener("mouseleave", onMouseLeave);
 	};
 }
+
+/**
+ * Deep clones the board and re-hydrates the buildings to be of Building Class, as cloning of the board strips special classes.
+ * @param board - The board to clone.
+ * @returns The cloned board.
+ */
+export function cloneBoard(board: Board): Board {
+	const predictedBoard: Board = structuredClone(board);
+
+	// this is used to re-hydrate the buildings to be of Building Class, as cloning of the board strips special classes
+	predictedBoard.hexes.forEach((column) => {
+		column.forEach((cell) => {
+			const [col, row] = cell.index;
+			const existingBuilding = board.hexes[col][row].building;
+			if (existingBuilding) {
+				// const copiedBuilding = structuredClone(existingBuilding);
+				const copiedBuilding = { ...existingBuilding };
+				predictedBoard.hexes[col][row].building = new TheBuilding(
+					copiedBuilding,
+				);
+			}
+		});
+	});
+	return predictedBoard;
+}

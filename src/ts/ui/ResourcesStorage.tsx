@@ -13,7 +13,7 @@ import {
 } from "../game-information/resources";
 import { settings } from "../game-information/settings";
 import { theBoard } from "../game-set-up";
-import { Board, getHoveredCell } from "../board/the-board";
+import { cloneBoard, getHoveredCell } from "../board/the-board";
 import { availableBuildings } from "../buildings.ts/aviable-buildings";
 import { TheBuilding } from "../buildings.ts/the-building";
 import { BuildingName } from "../buildings.ts/buildings";
@@ -116,25 +116,9 @@ function predictResourceProduction(
 	setNextTickCash: (cash: number) => void,
 ): void {
 	const currentlyHoveredOnCell = getHoveredCell();
-	const predictedBoard: Board = structuredClone(theBoard);
-
-	// this is used to re-hydrate the buildings to be of Building Class, as cloning of the board strips special classes
-	predictedBoard.hexes.forEach((row) => {
-		row.forEach((cell) => {
-			const existingBuilding =
-				theBoard.hexes[cell.index[0]][cell.index[1]].building;
-			if (existingBuilding) {
-				predictedBoard.hexes[cell.index[0]][cell.index[1]].building =
-					new TheBuilding(existingBuilding);
-			}
-		});
-	});
+	const predictedBoard = cloneBoard(theBoard);
 
 	if (currentlyHoveredOnCell && selectedBuilding) {
-		// const currentCell: BoardCell = getCell(
-		// 	predictedBoard,
-		// 	currentlyHoveredOnCell,
-		// )!;
 		const predictedBuilding = new TheBuilding(
 			Object.values(availableBuildings).find(
 				(building) => building.name === selectedBuilding,
@@ -147,10 +131,6 @@ function predictResourceProduction(
 			false,
 			true,
 		);
-		// predictedBoard = setCell(predictedBoard, currentlyHoveredOnCell, {
-		// 	...currentCell,
-		// 	building: predictedBuilding,
-		// });
 	}
 	const [resources, cash] = (() => {
 		const emptyResourcesStorage = {

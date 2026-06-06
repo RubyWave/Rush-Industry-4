@@ -30,6 +30,10 @@
 			border: 2px solid var(--resource-color);
 			position: relative;
 		}
+		&__amount-value,
+		&__income-value {
+			font-size: 1.25rem;
+		}
 		&__price {
 			color: gold;
 			padding-left: 1rem;

@@ -90,6 +90,20 @@ export const availableBuildings: AvailableBuildings = {
 		pointingBuilding: false,
 		buildingFunction: "inputOutput",
 	}),
+	powerPlant: new TheBuilding({
+		name: "powerPlant",
+		namePretty: "Power Plant",
+		mapIcon: "P",
+		baseCost: 180,
+		inputs: [{ resource: availableResources.coal, amount: 2 }],
+		outputs: [],
+		pointingBuilding: false,
+		buildingFunction: "effectSpreading",
+		staticEffectActions: ["spreadThroughput"],
+		// onBuild: () => {
+		// 	console.log("onBuild power plant");
+		// },
+	}),
 	market: new TheBuilding({
 		name: "market",
 		namePretty: "Market",

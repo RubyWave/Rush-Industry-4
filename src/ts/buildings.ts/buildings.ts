@@ -1,5 +1,6 @@
-import { CellIndex } from "../board/the-board";
+import { Board, CellIndex } from "../board/the-board";
 import { Resource } from "../game-information/resources";
+import { ActionType } from "./building-effects";
 
 export type BuildingName = string;
 export type PointingDirection =
@@ -13,6 +14,7 @@ export type PointingDirection =
 export type BuildingFunction =
 	| "output"
 	| "inputOutput"
+	| "effectSpreading"
 	| "buysFromDirection"
 	| "bulldozeBuilding";
 
@@ -53,4 +55,16 @@ export interface Building {
 	buildingFunctionDescription?: string[];
 	/** Building throughput modifiers */
 	throughputModifiers?: BuildingThroughput;
+	/** Cell index of the building */
+	cellIndex?: CellIndex;
+	/** Actions to be performed when the building is built */
+	staticEffectActions?: ActionType[];
+	/** Function to get the amount of the resource input of the specific building */
+	getBuildingInput?: (resource: Resource) => number;
+	/** Function to get the amount of the resource output of the specific building */
+	getBuildingOutput?: (resource: Resource) => number;
+	/** Function to be called when the building is built */
+	onBuild?: (board: Board) => void;
+	/** Function to be called when the building is destroyed */
+	onDestroy?: (board: Board) => void;
 }

@@ -1,4 +1,6 @@
+import { Board, CellIndex } from "../board/the-board";
 import { Resource } from "../game-information/resources";
+import { ActionType, buildDestroyActions } from "./building-effects";
 import {
 	Building,
 	BuildingFunction,
@@ -7,7 +9,7 @@ import {
 	PointingDirection,
 } from "./buildings";
 
-export class TheBuilding {
+export class TheBuilding implements Building {
 	public name: BuildingName;
 	public namePretty: string;
 	public mapIcon: string;
@@ -20,6 +22,8 @@ export class TheBuilding {
 	public buildingResourceMine?: Resource | null | undefined;
 	public buildingFunctionDescription?: string[] | undefined;
 	public throughputModifiers?: BuildingThroughput | undefined;
+	public cellIndex?: CellIndex;
+	public staticEffectActions?: ActionType[];
 	constructor(building: Building) {
 		this.name = building.name;
 		this.namePretty = building.namePretty;
@@ -33,6 +37,8 @@ export class TheBuilding {
 		this.buildingResourceMine = building.buildingResourceMine;
 		this.buildingFunctionDescription = building.buildingFunctionDescription;
 		this.throughputModifiers = building.throughputModifiers;
+		this.cellIndex = building.cellIndex ?? undefined;
+		this.staticEffectActions = building.staticEffectActions ?? [];
 	}
 
 	/**
@@ -77,5 +83,19 @@ export class TheBuilding {
 			}
 		});
 		return Number(amount.toFixed(2));
+	}
+
+	/**
+	 * Function to be called when the building is built
+	 */
+	public onBuild(board: Board): void {
+		buildDestroyActions(this.staticEffectActions ?? [], this, board, true);
+	}
+
+	/**
+	 * Function to be called when the building is destroyed
+	 */
+	public onDestroy(board: Board): void {
+		buildDestroyActions(this.staticEffectActions ?? [], this, board, false);
 	}
 }

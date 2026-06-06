@@ -65,6 +65,7 @@ export function buildBuilding(
 		}
 
 		if (cell.building instanceof TheBuilding) {
+			cell.building.onDestroy(board);
 			cell.building = null;
 		}
 		emitChange();
@@ -107,6 +108,7 @@ export function buildBuilding(
 
 	if (!prediction) {
 		gameStatesGlobal.cash -= building.baseCost;
+		if (building.onBuild) building.onBuild(board);
 	}
 
 	if (
@@ -121,12 +123,13 @@ export function buildBuilding(
 		];
 	}
 
+	// this convoluted  thingy is to not change pointing direction of all buildings, just this bulid this very moment
 	const newBuilding: Building = {
 		...building,
 		pointingDirection: gameStatesGlobal.pointingDirection,
+		cellIndex: index,
 	};
 
-	// this convoluted  thingy is to not change pointing direction of all buildings, just this bulid this very moment
 	cell.building = new TheBuilding(newBuilding);
 	if (!prediction) {
 		gameStatesGlobal.gameLog = [
