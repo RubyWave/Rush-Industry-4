@@ -22,7 +22,7 @@ export type BuildingFunction =
 export type BuildingThroughput = {
 	/** Should be kept between 0 and 1.  */
 	modifier: number;
-	type: "addative" | "multiplicative";
+	stackingType: "addative" | "multiplicative";
 	description?: string;
 }[];
 

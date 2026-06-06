@@ -100,9 +100,6 @@ export const availableBuildings: AvailableBuildings = {
 		pointingBuilding: false,
 		buildingFunction: "effectSpreading",
 		staticEffectActions: ["spreadThroughput"],
-		// onBuild: () => {
-		// 	console.log("onBuild power plant");
-		// },
 	}),
 	market: new TheBuilding({
 		name: "market",

@@ -1,8 +1,8 @@
 import { settings } from "../game-information/settings";
 import { Building } from "../buildings.ts/buildings";
-// import { CellIndex, getNeighborCell } from "../board/the-board";
+// import { CellIndex, getNeighbourCell } from "../board/the-board";
 import { Resources } from "../game-information/resources";
-import { Board, CellIndex, getNeighborCell } from "../board/the-board";
+import { Board, CellIndex, getNeighbourCell } from "../board/the-board";
 import { TheBuilding } from "../buildings.ts/the-building";
 
 function inputOutputBuilding(
@@ -60,16 +60,16 @@ function buysFromDirectionBuilding(
 	cash: number,
 	boardToCalculateFor: Board,
 ): [Resources, number] {
-	const neighborCell = getNeighborCell(
+	const neighbourCell = getNeighbourCell(
 		boardToCalculateFor,
 		cellIndex,
 		building.pointingDirection!,
 	);
-	if (!neighborCell) return [allResources, cash];
-	const neighborBuilding = neighborCell.building;
-	if (!neighborBuilding) return [allResources, cash];
+	if (!neighbourCell) return [allResources, cash];
+	const neighbourBuilding = neighbourCell.building;
+	if (!neighbourBuilding) return [allResources, cash];
 
-	neighborBuilding.outputs.forEach((output) => {
+	neighbourBuilding.outputs.forEach((output) => {
 		const resource = allResources.find(
 			(resource) => resource.resource.name === output.resource.name,
 		)!;

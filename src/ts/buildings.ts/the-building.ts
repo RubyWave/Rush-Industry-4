@@ -1,7 +1,10 @@
 import { Board, BoardCell, CellIndex } from "../board/the-board";
 import { Resource } from "../game-information/resources";
-import { settings } from "../game-information/settings";
-import { ActionType, buildDestroyActions } from "./building-effects";
+import {
+	ActionType,
+	buildDestroyActions,
+	oreMultiplier,
+} from "./building-effects";
 import {
 	Building,
 	BuildingEffect,
@@ -48,6 +51,26 @@ export class TheBuilding implements Building {
 	}
 
 	/**
+	 * Calculates the throughput modifier for a building
+	 * @param building - The building to calculate the throughput modifier for.
+	 * @returns The throughput modifier for the building. Neutral value is 1; 1.25 means 25% more throughput; 0.75 means 25% less throughput.
+	 */
+	private calculateThroughputModifier(building: Building): number {
+		let wholeModifier = 1;
+		building?.receivedEffects?.forEach((effect) => {
+			if (effect.effectKind !== "BuildingThroughput") return;
+			effect.theEffect.forEach((modifier) => {
+				if (modifier.stackingType === "addative") {
+					wholeModifier += modifier.modifier;
+				} else if (modifier.stackingType === "multiplicative") {
+					wholeModifier *= modifier.modifier;
+				}
+			});
+		});
+		return wholeModifier;
+	}
+
+	/**
 	 * Returns the amount of the resource input of the specific building. If no given resource is found, returns 0.
 	 * @param building
 	 * @param resource
@@ -58,14 +81,8 @@ export class TheBuilding implements Building {
 			this.inputs.find((input) => input.resource.name === resource.name)
 				?.amount ?? 0;
 		if (amount === 0) return 0;
-		if (!this.throughputModifiers) return amount;
-		this.throughputModifiers?.forEach((modifier) => {
-			if (modifier.type === "addative") {
-				amount += modifier.modifier;
-			} else {
-				amount *= modifier.modifier;
-			}
-		});
+
+		amount *= this.calculateThroughputModifier(this);
 		return Number(amount.toFixed(2));
 	}
 
@@ -80,20 +97,8 @@ export class TheBuilding implements Building {
 				(output) => output.resource.name === resource.name,
 			)?.amount ?? 0;
 		if (amount === 0) return 0;
-		if (!this.receivedEffects) return Number(amount.toFixed(2));
 
-		this.receivedEffects.forEach((effect) => {
-			if (effect.effectKind !== "BuildingThroughput") return;
-			let wholeModifier = 1;
-			effect.theEffect.forEach((modifier) => {
-				if (modifier.type === "addative") {
-					wholeModifier += modifier.modifier;
-				} else {
-					wholeModifier *= modifier.modifier;
-				}
-			});
-			amount *= wholeModifier;
-		});
+		amount *= this.calculateThroughputModifier(this);
 		return Number(amount.toFixed(2));
 	}
 
@@ -101,24 +106,11 @@ export class TheBuilding implements Building {
 	 * Function to be called when the building is built
 	 */
 	public onBuild(board: Board, cell: BoardCell): void {
-		if (this.buildingResourceMine?.name === cell.resourceOre?.name) {
-			this.receivedEffects = [
-				...(this.receivedEffects ?? []),
-				{
-					source: {
-						sourceType: "cell",
-						source: cell,
-					},
-					target: this,
-					effectKind: "BuildingThroughput",
-					theEffect: [
-						{
-							modifier: settings.oreThroughputModifier,
-							type: "addative",
-						},
-					] as BuildingThroughput,
-				},
-			];
+		if (
+			this.buildingResourceMine && // needs to check if this is set, otherwise empty cells will count as ore for building without set ore
+			this.buildingResourceMine?.name === cell.resourceOre?.name
+		) {
+			oreMultiplier(this, cell);
 		}
 		buildDestroyActions(this.staticEffectActions ?? [], this, board, true);
 	}
