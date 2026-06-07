@@ -21,6 +21,12 @@ export const GameInstructions = () => {
 				by placing Bulldozer on them, although you will get no refund.
 			</p>
 			<p>
+				Some buildings have input resources. If there will be not enough
+				of needed resources in the storage, the resource will be bought
+				automatically at {settings.resourceBuyPriceModifier}x base
+				price. It can be lowered by placing Market next to the building.
+			</p>
+			<p>
 				The board consist of {settings.board.cols} columns and{" "}
 				{settings.board.rows} rows. On some hexes, some resources are
 				spawned. While it is not required to build mines on specific

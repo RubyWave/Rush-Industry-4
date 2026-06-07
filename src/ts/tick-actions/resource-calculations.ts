@@ -11,10 +11,7 @@ function inputOutputBuilding(
 	cash: number,
 	prediction: boolean = false,
 ): [Resources, number] {
-	let buildingHaveInputs = true;
-
 	building.inputs.forEach((input) => {
-		if (!buildingHaveInputs) return;
 		const resource = allResources.find(
 			(resource) => resource.resource.name === input.resource.name,
 		)!;
@@ -26,14 +23,10 @@ function inputOutputBuilding(
 		let adjustedInput = outputAmount / settings.tickInterval; // resources are consumed per second
 		adjustedInput = Number(adjustedInput.toFixed(2));
 
-		if (resource.amount < adjustedInput && !prediction) {
-			buildingHaveInputs = false;
-		} else {
-			resource.amount -= adjustedInput;
-			allResources[index] = resource;
-		}
+		resource.amount -= adjustedInput;
+		if (!prediction) allResources[index] = resource;
 	});
-	if (!buildingHaveInputs) return [allResources, cash]; // for now, building must have all inputs to work
+
 	building.outputs.forEach((output) => {
 		const resource = allResources.find(
 			(resource) => resource.resource.name === output.resource.name,
@@ -50,6 +43,9 @@ function inputOutputBuilding(
 		resource.amount += adjustedOutput;
 		allResources[index] = resource;
 	});
+
+	[allResources, cash] = buyMissingResources(building, allResources, cash);
+
 	return [allResources, cash];
 }
 
@@ -88,6 +84,30 @@ function buysFromDirectionBuilding(
 
 		resource.amount -= adjustedOutput;
 		allResources[index] = resource;
+	});
+	return [allResources, cash];
+}
+
+/**
+ * Buy resources that would be lower then 0 at the 3x base price.
+ * @param allResources
+ * @returns filtered allResources to not have any resource in stock of lower then 0
+ */
+function buyMissingResources(
+	building: TheBuilding,
+	allResources: Resources,
+	cash: number,
+): [Resources, number] {
+	allResources.forEach((resource) => {
+		if (resource.amount < 0) {
+			const missingAmount = Math.abs(resource.amount);
+			const cashPayed =
+				missingAmount *
+				resource.resource.basePrice *
+				settings.resourceBuyPriceModifier;
+			cash -= cashPayed;
+			resource.amount += missingAmount;
+		}
 	});
 	return [allResources, cash];
 }

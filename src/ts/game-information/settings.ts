@@ -31,4 +31,5 @@ export const settings = {
 	skipPreGame: process.env.NODE_ENV === "development", // skip map preview when developing locally
 	buildingPredictionDisabled: false,
 	oreThroughputModifier: 0.25,
+	resourceBuyPriceModifier: 3, // multiplies the base price when buying resource
 };
