@@ -109,28 +109,27 @@ export const calculateResourceProduction = (
 	for (let i = 0; i < ticksNumber; i++) {
 		boardToCalculateFor.hexes.forEach((row) => {
 			row.forEach((cell) => {
-				if (cell.building) {
-					switch (cell.building.buildingFunction) {
-						case "inputOutput":
-						case "output":
-							[newAllResources, newCash] = inputOutputBuilding(
-								cell.building,
-								newAllResources,
-								newCash,
-								prediction,
-							);
-							break;
-						case "buysFromDirection":
-							[newAllResources, newCash] =
-								buysFromDirectionBuilding(
-									cell.building,
-									newAllResources,
-									cell.index,
-									newCash,
-									boardToCalculateFor,
-								);
-							break;
-					}
+				if (!cell.building) return;
+				if (
+					cell.building.inputs.length > 0 ||
+					cell.building.outputs.length > 0
+				) {
+					[newAllResources, newCash] = inputOutputBuilding(
+						cell.building,
+						newAllResources,
+						newCash,
+						prediction,
+					);
+				} else if (
+					cell.building.buildingFunction === "buysFromDirection"
+				) {
+					[newAllResources, newCash] = buysFromDirectionBuilding(
+						cell.building,
+						newAllResources,
+						cell.index,
+						newCash,
+						boardToCalculateFor,
+					);
 				}
 			});
 		});

@@ -100,6 +100,9 @@ export const availableBuildings: AvailableBuildings = {
 		pointingBuilding: false,
 		buildingFunction: "effectSpreading",
 		staticEffectActions: ["spreadThroughput"],
+		buildingFunctionDescription: [
+			"All buildings around the Power Plant have throughput increased by 10%. One building can be affected by multiple powerplants.",
+		],
 	}),
 	market: new TheBuilding({
 		name: "market",
