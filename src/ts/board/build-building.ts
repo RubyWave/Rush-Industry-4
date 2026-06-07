@@ -39,8 +39,8 @@ export function buildBuilding(
 	const cell = getCell(board, index);
 	if (!cell) return;
 
-	if (building.name === "bulldozer" && !prediction) {
-		if (cell.building) {
+	if (building.name === "bulldozer") {
+		if (cell.building && !prediction) {
 			gameStatesGlobal.gameLog = [
 				...gameStatesGlobal.gameLog,
 				{
@@ -48,7 +48,7 @@ export function buildBuilding(
 					logType: "warning",
 				},
 			];
-		} else if (cell.buildingBlueprint) {
+		} else if (cell.buildingBlueprint && !prediction) {
 			cell.buildingBlueprint = null;
 			gameStatesGlobal.buildQueue = gameStatesGlobal.buildQueue.filter(
 				(blueprint) => {

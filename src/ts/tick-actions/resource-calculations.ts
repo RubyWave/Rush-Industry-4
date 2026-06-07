@@ -5,28 +5,11 @@ import { Resources } from "../game-information/resources";
 import { Board, CellIndex, getNeighbourCell } from "../board/the-board";
 import { TheBuilding } from "../buildings.ts/the-building";
 
-function inputOutputBuilding(
+function buildingOutputs(
 	building: TheBuilding,
 	allResources: Resources,
 	cash: number,
-	prediction: boolean = false,
 ): [Resources, number] {
-	building.inputs.forEach((input) => {
-		const resource = allResources.find(
-			(resource) => resource.resource.name === input.resource.name,
-		)!;
-		const index = allResources.indexOf(resource);
-
-		const outputAmount = building.getBuildingInput(input.resource);
-		if (outputAmount === 0) return allResources;
-
-		let adjustedInput = outputAmount / settings.tickInterval; // resources are consumed per second
-		adjustedInput = Number(adjustedInput.toFixed(2));
-
-		resource.amount -= adjustedInput;
-		allResources[index] = resource;
-	});
-
 	building.outputs.forEach((output) => {
 		const resource = allResources.find(
 			(resource) => resource.resource.name === output.resource.name,
@@ -44,13 +27,37 @@ function inputOutputBuilding(
 		allResources[index] = resource;
 	});
 
+	return [allResources, cash];
+}
+
+function buildingInputs(
+	building: TheBuilding,
+	allResources: Resources,
+	cash: number,
+	prediction: boolean = false,
+): [Resources, number] {
+	building.inputs.forEach((input) => {
+		const resource = allResources.find(
+			(resource) => resource.resource.name === input.resource.name,
+		)!;
+		const index = allResources.indexOf(resource);
+
+		const inputAmount = building.getBuildingInput(input.resource);
+		if (inputAmount === 0) return allResources;
+
+		let adjustedInput = inputAmount / settings.tickInterval; // resources are consumed per second
+		adjustedInput = Number(adjustedInput.toFixed(2));
+
+		resource.amount -= adjustedInput;
+		allResources[index] = resource;
+	});
+
 	[allResources, cash] = buyMissingResources(
 		building,
 		allResources,
 		cash,
 		prediction,
 	);
-
 	return [allResources, cash];
 }
 
@@ -145,18 +152,15 @@ export const calculateResourceProduction = (
 	prediction: boolean = false,
 ): [Resources, number] => {
 	for (let i = 0; i < ticksNumber; i++) {
+		// todo: probably this could be done in more optimised way
 		boardToCalculateFor.hexes.forEach((row) => {
 			row.forEach((cell) => {
 				if (!cell.building) return;
-				if (
-					cell.building.inputs.length > 0 ||
-					cell.building.outputs.length > 0
-				) {
-					[newAllResources, newCash] = inputOutputBuilding(
+				if (cell.building.outputs.length > 0) {
+					[newAllResources, newCash] = buildingOutputs(
 						cell.building,
 						newAllResources,
 						newCash,
-						prediction,
 					);
 				} else if (
 					cell.building.buildingFunctions.includes(
@@ -169,6 +173,20 @@ export const calculateResourceProduction = (
 						cell.index,
 						newCash,
 						boardToCalculateFor,
+					);
+				}
+			});
+		});
+		// needs to iterate twice. First for outputs, then, for inputs, to prevent circular dependencies in buying resources
+		boardToCalculateFor.hexes.forEach((row) => {
+			row.forEach((cell) => {
+				if (!cell.building) return;
+				if (cell.building.inputs.length > 0) {
+					[newAllResources, newCash] = buildingInputs(
+						cell.building,
+						newAllResources,
+						newCash,
+						prediction,
 					);
 				}
 			});
