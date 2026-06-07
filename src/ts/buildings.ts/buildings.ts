@@ -58,7 +58,7 @@ export interface Building {
 	/** Pointing direction of the building */
 	pointingDirection?: PointingDirection;
 	/** Special functions that the building can perform */
-	buildingFunction: BuildingFunction[];
+	buildingFunctions: BuildingFunction[];
 	/** Some buildings are mines, and will get throughput multiplier if they are placed on resource hex*/
 	buildingResourceMine?: Resource | null;
 	/** Description of the special functions */

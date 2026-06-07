@@ -28,7 +28,7 @@ export function buildDestroyActions(
 	const neighbours = getAllNeighbourCells(board, building.cellIndex!);
 	neighbours.forEach((neighbour) => {
 		if (!neighbour.building) return;
-		neighbour.building.buildingFunction.forEach((action) => {
+		neighbour.building.buildingFunctions.forEach((action) => {
 			switch (action) {
 				case "spreadThroughput":
 					spreadThroughputRecive(neighbour.building!, building);

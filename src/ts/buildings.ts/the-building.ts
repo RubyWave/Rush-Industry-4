@@ -19,7 +19,7 @@ export class TheBuilding implements Building {
 	public outputs: { resource: Resource; amount: number }[];
 	public pointingBuilding: boolean;
 	public pointingDirection?: PointingDirection | undefined;
-	public buildingFunction: BuildingFunction[];
+	public buildingFunctions: BuildingFunction[];
 	public buildingResourceMine?: Resource | null | undefined;
 	public buildingFunctionDescription?: string[] | undefined;
 	public throughputModifiers?: BuildingThroughput | undefined;
@@ -36,7 +36,7 @@ export class TheBuilding implements Building {
 		this.outputs = building.outputs;
 		this.pointingBuilding = building.pointingBuilding;
 		this.pointingDirection = building.pointingDirection;
-		this.buildingFunction = building.buildingFunction;
+		this.buildingFunctions = building.buildingFunctions;
 		this.buildingResourceMine = building.buildingResourceMine;
 		this.buildingFunctionDescription = building.buildingFunctionDescription;
 		this.throughputModifiers = building.throughputModifiers;
@@ -107,13 +107,13 @@ export class TheBuilding implements Building {
 		) {
 			oreMultiplier(this, cell);
 		}
-		buildDestroyActions(this.buildingFunction, this, board, true);
+		buildDestroyActions(this.buildingFunctions, this, board, true);
 	}
 
 	/**
 	 * Function to be called when the building is destroyed
 	 */
 	public onDestroy(board: Board): void {
-		buildDestroyActions(this.buildingFunction, this, board, false);
+		buildDestroyActions(this.buildingFunctions, this, board, false);
 	}
 }

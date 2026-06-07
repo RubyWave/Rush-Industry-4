@@ -14,7 +14,7 @@ export const availableBuildings: AvailableBuildings = {
 		inputs: [],
 		outputs: [{ resource: availableResources.coal, amount: 5 }],
 		pointingBuilding: false,
-		buildingFunction: ["output"],
+		buildingFunctions: ["output"],
 		buildingResourceMine: availableResources.coal,
 	}),
 	ironMine: new TheBuilding({
@@ -25,7 +25,7 @@ export const availableBuildings: AvailableBuildings = {
 		inputs: [],
 		outputs: [{ resource: availableResources.iron, amount: 2 }],
 		pointingBuilding: false,
-		buildingFunction: ["output"],
+		buildingFunctions: ["output"],
 		buildingResourceMine: availableResources.iron,
 	}),
 	copperMine: new TheBuilding({
@@ -36,7 +36,7 @@ export const availableBuildings: AvailableBuildings = {
 		inputs: [],
 		outputs: [{ resource: availableResources.copper, amount: 3 }],
 		pointingBuilding: false,
-		buildingFunction: ["output"],
+		buildingFunctions: ["output"],
 		buildingResourceMine: availableResources.copper,
 	}),
 	rubberPlant: new TheBuilding({
@@ -47,7 +47,7 @@ export const availableBuildings: AvailableBuildings = {
 		inputs: [],
 		outputs: [{ resource: availableResources.rubber, amount: 1 }],
 		pointingBuilding: false,
-		buildingFunction: ["output"],
+		buildingFunctions: ["output"],
 		buildingResourceMine: availableResources.rubber,
 	}),
 	steelMill: new TheBuilding({
@@ -61,7 +61,7 @@ export const availableBuildings: AvailableBuildings = {
 		],
 		outputs: [{ resource: availableResources.steel, amount: 6 }],
 		pointingBuilding: false,
-		buildingFunction: ["input", "output"],
+		buildingFunctions: ["input", "output"],
 	}),
 	electronicsFactory: new TheBuilding({
 		name: "electronicsFactory",
@@ -74,7 +74,7 @@ export const availableBuildings: AvailableBuildings = {
 		],
 		outputs: [{ resource: availableResources.electronics, amount: 10 }],
 		pointingBuilding: false,
-		buildingFunction: ["input", "output"],
+		buildingFunctions: ["input", "output"],
 	}),
 	machineFactory: new TheBuilding({
 		name: "machineFactory",
@@ -88,7 +88,7 @@ export const availableBuildings: AvailableBuildings = {
 		],
 		outputs: [{ resource: availableResources.machine, amount: 10 }],
 		pointingBuilding: false,
-		buildingFunction: ["input", "output"],
+		buildingFunctions: ["input", "output"],
 	}),
 	powerPlant: new TheBuilding({
 		name: "powerPlant",
@@ -98,7 +98,7 @@ export const availableBuildings: AvailableBuildings = {
 		inputs: [{ resource: availableResources.coal, amount: 2 }],
 		outputs: [],
 		pointingBuilding: false,
-		buildingFunction: ["spreadThroughput"],
+		buildingFunctions: ["spreadThroughput"],
 		buildingFunctionDescription: [
 			"All buildings around the Power Plant have throughput increased by 10%. One building can be affected by multiple powerplants.",
 		],
@@ -111,7 +111,7 @@ export const availableBuildings: AvailableBuildings = {
 		inputs: [],
 		outputs: [],
 		pointingBuilding: true,
-		buildingFunction: ["buysFromDirection"],
+		buildingFunctions: ["buysFromDirection"],
 		buildingFunctionDescription: [
 			"Buys resources from the direction of the building. This is only way to sell the resources. Amount of resources sold is equal to the base output of the building.",
 			"To change the direction, click R while building is selected.",
@@ -126,7 +126,7 @@ export const availableBuildings: AvailableBuildings = {
 		inputs: [],
 		outputs: [],
 		pointingBuilding: false,
-		buildingFunction: ["bulldozeBuilding"],
+		buildingFunctions: ["bulldozeBuilding"],
 		buildingFunctionDescription: [
 			"If placed on another building, that building will be destroyed.",
 			"No refunds for destroyed building costs.",
