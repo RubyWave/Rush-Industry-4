@@ -111,7 +111,7 @@ export const availableBuildings: AvailableBuildings = {
 		inputs: [],
 		outputs: [],
 		pointingBuilding: true,
-		buildingFunctions: ["buysFromDirection"],
+		buildingFunctions: ["buysFromDirection", "spreadResourceBuyPrice"],
 		buildingFunctionDescription: [
 			"Buys resources from the direction of the building. This is only way to sell the resources. Amount of resources sold is equal to the base output of the building.",
 			"To change the direction, click R while building is selected.",

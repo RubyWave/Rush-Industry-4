@@ -54,7 +54,7 @@ export class TheBuilding implements Building {
 		let wholeModifier = 1;
 		building?.receivedEffects?.forEach((effect) => {
 			if (effect.effectKind !== "BuildingThroughput") return;
-			effect.theEffect.forEach((modifier) => {
+			(effect.theEffect as BuildingThroughput).forEach((modifier) => {
 				if (modifier.stackingType === "addative") {
 					wholeModifier += modifier.modifier;
 				} else if (modifier.stackingType === "multiplicative") {

@@ -98,7 +98,8 @@ export const ResourcesStorage = () => {
 			<div className="cash-display">
 				<h3 title="cash in storage, and income per second, assuming all buildings are working, ie all inputs are available">
 					Cash: {Number(cash.toFixed(2))}€ (
-					{Number(nextTickCash.toFixed(2))}€/s)
+					{Number((nextTickCash * settings.tickInterval).toFixed(2))}
+					€/s)
 				</h3>
 			</div>
 		</div>

@@ -12,6 +12,7 @@ export type PointingDirection =
 
 export type BuildingFunction =
 	| "spreadThroughput"
+	| "spreadResourceBuyPrice"
 	| "output"
 	| "input"
 	| "buysFromDirection"
@@ -19,9 +20,14 @@ export type BuildingFunction =
 
 /** Default throughput is 1. */
 export type BuildingThroughput = {
-	/** Should be kept between 0 and 1.  */
 	modifier: number;
 	stackingType: "addative" | "multiplicative";
+	description?: string;
+}[];
+
+/** Default price modifier is 1. */
+export type BuildingPriceModifier = {
+	modifier: number;
 	description?: string;
 }[];
 
@@ -32,8 +38,8 @@ export type BuildingEffect = {
 		source: Building | BoardCell;
 	};
 	target: Building;
-	effectKind: "BuildingThroughput";
-	theEffect: BuildingThroughput;
+	effectKind: "BuildingThroughput" | "BuildingPriceModifier";
+	theEffect: BuildingThroughput | BuildingPriceModifier;
 };
 
 export interface BuildingBlueprint {

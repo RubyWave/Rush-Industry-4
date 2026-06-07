@@ -21,7 +21,11 @@ export function buildDestroyActions(
 		switch (action) {
 			case "spreadThroughput":
 				if (build) spreadThroughputBuild(building, board);
-				else spreadThroughputDestroy(building);
+				else neighbourDestroyEffect(building);
+				break;
+			case "spreadResourceBuyPrice":
+				if (build) spreadResourceBuyPriceEffectBuild(building, board);
+				else neighbourDestroyEffect(building);
 				break;
 		}
 	});
@@ -38,6 +42,37 @@ export function buildDestroyActions(
 	});
 }
 
+function spreadResourceBuyPriceEffectBuild(
+	building: TheBuilding,
+	board: Board,
+) {
+	const neighbours = getAllNeighbourCells(board, building.cellIndex!);
+	neighbours.forEach((neighbour) => {
+		if (!neighbour.building) return;
+		const newEffect: BuildingEffect = {
+			source: {
+				sourceType: "building",
+				source: building,
+			},
+			target: neighbour.building,
+			effectKind: "BuildingPriceModifier",
+			theEffect: [
+				{
+					modifier: 0.85,
+					description: "Neighbour bonus from " + building.namePretty,
+				},
+			],
+		};
+		neighbour.building.receivedEffects = [
+			...(neighbour.building.receivedEffects ?? []),
+			newEffect as BuildingEffect,
+		];
+		building.emittedEffects = [
+			...(building.emittedEffects ?? []),
+			newEffect as BuildingEffect,
+		];
+	});
+}
 function spreadThroughputBuild(building: TheBuilding, board: Board): void {
 	const neighbours = getAllNeighbourCells(board, building.cellIndex!);
 	neighbours.forEach((neighbour) => {
@@ -103,7 +138,7 @@ function spreadThroughputRecive(
 	];
 }
 
-function spreadThroughputDestroy(building: TheBuilding): void {
+function neighbourDestroyEffect(building: TheBuilding): void {
 	building.emittedEffects?.forEach((effect) => {
 		effect.target.receivedEffects = effect.target.receivedEffects?.filter(
 			(e) => e !== effect,

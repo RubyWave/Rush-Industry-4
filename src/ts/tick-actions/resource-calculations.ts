@@ -1,5 +1,5 @@
 import { settings } from "../game-information/settings";
-import { Building } from "../buildings.ts/buildings";
+import { Building, BuildingPriceModifier } from "../buildings.ts/buildings";
 // import { CellIndex, getNeighbourCell } from "../board/the-board";
 import { Resources } from "../game-information/resources";
 import { Board, CellIndex, getNeighbourCell } from "../board/the-board";
@@ -24,7 +24,7 @@ function inputOutputBuilding(
 		adjustedInput = Number(adjustedInput.toFixed(2));
 
 		resource.amount -= adjustedInput;
-		if (!prediction) allResources[index] = resource;
+		allResources[index] = resource;
 	});
 
 	building.outputs.forEach((output) => {
@@ -44,7 +44,12 @@ function inputOutputBuilding(
 		allResources[index] = resource;
 	});
 
-	[allResources, cash] = buyMissingResources(building, allResources, cash);
+	[allResources, cash] = buyMissingResources(
+		building,
+		allResources,
+		cash,
+		prediction,
+	);
 
 	return [allResources, cash];
 }
@@ -97,16 +102,29 @@ function buyMissingResources(
 	building: TheBuilding,
 	allResources: Resources,
 	cash: number,
+	prediction: boolean = false,
 ): [Resources, number] {
+	let buyCostModifier = 1; // lower the modifier, cheaper the resource
+	building.receivedEffects?.forEach((effect) => {
+		if (effect.effectKind !== "BuildingPriceModifier") return;
+		(effect.theEffect as BuildingPriceModifier).forEach((modifier) => {
+			buyCostModifier *= modifier.modifier;
+		});
+	});
 	allResources.forEach((resource) => {
 		if (resource.amount < 0) {
 			const missingAmount = Math.abs(resource.amount);
 			const cashPayed =
 				missingAmount *
 				resource.resource.basePrice *
-				settings.resourceBuyPriceModifier;
+				settings.resourceBuyPriceModifier *
+				buyCostModifier;
 			cash -= cashPayed;
-			resource.amount += missingAmount;
+
+			// when predicting, we want to see negative resources, so we shouldn't zero them
+			if (!prediction) {
+				resource.amount += missingAmount;
+			}
 		}
 	});
 	return [allResources, cash];
