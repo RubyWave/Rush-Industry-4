@@ -100,13 +100,6 @@ export const BuildingStats = () => {
 								1.25x:{" "}
 							</li>
 						)}
-						{availableBuildings[selectedBuilding as BuildingName]
-							?.buildingFunction === "inputOutput" && (
-							<li>
-								This building will not output anything if no
-								inputs are provided.{" "}
-							</li>
-						)}
 					</ul>
 				</div>
 			</div>

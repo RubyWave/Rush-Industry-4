@@ -1,10 +1,6 @@
 import { Board, BoardCell, CellIndex } from "../board/the-board";
 import { Resource } from "../game-information/resources";
-import {
-	ActionType,
-	buildDestroyActions,
-	oreMultiplier,
-} from "./building-effects";
+import { buildDestroyActions, oreMultiplier } from "./building-effects";
 import {
 	Building,
 	BuildingEffect,
@@ -23,12 +19,12 @@ export class TheBuilding implements Building {
 	public outputs: { resource: Resource; amount: number }[];
 	public pointingBuilding: boolean;
 	public pointingDirection?: PointingDirection | undefined;
-	public buildingFunction: BuildingFunction;
+	public buildingFunction: BuildingFunction[];
 	public buildingResourceMine?: Resource | null | undefined;
 	public buildingFunctionDescription?: string[] | undefined;
 	public throughputModifiers?: BuildingThroughput | undefined;
 	public cellIndex?: CellIndex;
-	public staticEffectActions?: ActionType[];
+	public staticEffectActions?: BuildingFunction[];
 	public emittedEffects?: BuildingEffect[];
 	public receivedEffects?: BuildingEffect[];
 	constructor(building: Building) {
@@ -45,7 +41,6 @@ export class TheBuilding implements Building {
 		this.buildingFunctionDescription = building.buildingFunctionDescription;
 		this.throughputModifiers = building.throughputModifiers;
 		this.cellIndex = building.cellIndex ?? undefined;
-		this.staticEffectActions = building.staticEffectActions ?? [];
 		this.emittedEffects = building.emittedEffects ?? [];
 		this.receivedEffects = building.receivedEffects ?? [];
 	}
@@ -112,13 +107,13 @@ export class TheBuilding implements Building {
 		) {
 			oreMultiplier(this, cell);
 		}
-		buildDestroyActions(this.staticEffectActions ?? [], this, board, true);
+		buildDestroyActions(this.buildingFunction, this, board, true);
 	}
 
 	/**
 	 * Function to be called when the building is destroyed
 	 */
 	public onDestroy(board: Board): void {
-		buildDestroyActions(this.staticEffectActions ?? [], this, board, false);
+		buildDestroyActions(this.buildingFunction, this, board, false);
 	}
 }

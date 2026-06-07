@@ -4,18 +4,20 @@
 
 import { Board, BoardCell, getAllNeighbourCells } from "../board/the-board";
 import { settings } from "../game-information/settings";
-import { BuildingEffect, BuildingThroughput } from "./buildings";
+import {
+	BuildingEffect,
+	BuildingFunction,
+	BuildingThroughput,
+} from "./buildings";
 import { TheBuilding } from "./the-building";
 
-export type ActionType = "spreadThroughput";
-
 export function buildDestroyActions(
-	action: ActionType[],
+	actions: BuildingFunction[],
 	building: TheBuilding,
 	board: Board,
 	build: boolean,
 ): void {
-	action.forEach((action) => {
+	actions.forEach((action) => {
 		switch (action) {
 			case "spreadThroughput":
 				if (build) spreadThroughputBuild(building, board);
@@ -26,7 +28,7 @@ export function buildDestroyActions(
 	const neighbours = getAllNeighbourCells(board, building.cellIndex!);
 	neighbours.forEach((neighbour) => {
 		if (!neighbour.building) return;
-		neighbour.building.staticEffectActions?.forEach((action) => {
+		neighbour.building.buildingFunction.forEach((action) => {
 			switch (action) {
 				case "spreadThroughput":
 					spreadThroughputRecive(neighbour.building!, building);

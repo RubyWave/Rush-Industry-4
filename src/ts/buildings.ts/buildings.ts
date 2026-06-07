@@ -1,7 +1,5 @@
 import { Board, BoardCell, CellIndex } from "../board/the-board";
 import { Resource } from "../game-information/resources";
-import { ActionType } from "./building-effects";
-
 export type BuildingName = string;
 export type PointingDirection =
 	| "upLeft"
@@ -11,10 +9,11 @@ export type PointingDirection =
 	| "downLeft"
 	| "downRight"
 	| null;
+
 export type BuildingFunction =
+	| "spreadThroughput"
 	| "output"
-	| "inputOutput"
-	| "effectSpreading"
+	| "input"
 	| "buysFromDirection"
 	| "bulldozeBuilding";
 
@@ -59,7 +58,7 @@ export interface Building {
 	/** Pointing direction of the building */
 	pointingDirection?: PointingDirection;
 	/** Special functions that the building can perform */
-	buildingFunction: BuildingFunction;
+	buildingFunction: BuildingFunction[];
 	/** Some buildings are mines, and will get throughput multiplier if they are placed on resource hex*/
 	buildingResourceMine?: Resource | null;
 	/** Description of the special functions */
@@ -68,8 +67,6 @@ export interface Building {
 	throughputModifiers?: BuildingThroughput;
 	/** Cell index of the building */
 	cellIndex?: CellIndex;
-	/** Actions to be performed when the building is built */
-	staticEffectActions?: ActionType[];
 	/** Effects emitted by the building */
 	emittedEffects?: BuildingEffect[];
 	/** Effects received by the building */

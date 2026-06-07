@@ -141,7 +141,7 @@ export const calculateResourceProduction = (
 						prediction,
 					);
 				} else if (
-					cell.building.buildingFunction === "buysFromDirection"
+					cell.building.buildingFunction.includes("buysFromDirection")
 				) {
 					[newAllResources, newCash] = buysFromDirectionBuilding(
 						cell.building,
